@@ -1,14 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router';
+import Editor from '../editor/Editor';
 
 class HomePage extends React.Component {
 	render() {
-		return (
-			<div className="jumbotron">
-				<h1>CS-546 Boilerplate</h1>
-				<p>Lots of code, not a lot of styling</p>
-			</div>
-		);
+		return <Editor />;
 	}
 }
 

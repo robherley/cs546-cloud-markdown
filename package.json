@@ -1,16 +1,14 @@
 {
 	"name": "cs546-cloud-markdown",
 	"version": "1.0.0",
-	"description":
-		"Final Project for CS-546, a simple cloud based markdown editor.",
+	"description": "Final Project for CS-546, a simple cloud based markdown editor.",
 	"engines": {
 		"npm": ">=5",
 		"node": "8.7.0"
 	},
 	"scripts": {
 		"start": "node server.js",
-		"dev":
-			"concurrently -n '☁️ SERVER,💻 CLIENT' -c 'magenta,cyan' 'npm run nodemon' 'npm run wds'",
+		"dev": "concurrently -n '☁️ SERVER,💻 CLIENT' -c 'magenta,cyan' 'npm run nodemon' 'npm run wds'",
 		"prod": "npm-run-all --sequential build start",
 		"nodemon": "node_modules/.bin/nodemon",
 		"wds": "webpack-dev-server --open --config ./webpack.config.dev.js",
@@ -19,21 +17,26 @@
 		"build": "babel-node tools/build.js"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome": "^1.0.0",
+		"@fortawesome/fontawesome-free-solid": "^5.0.0",
+		"@fortawesome/react-fontawesome": "0.0.14",
 		"axios": "^0.17.0",
 		"bluebird": "^3.4.7",
 		"body-parser": "~1.18.2",
-		"bootstrap": "3.3.7",
 		"compression": "^1.6.2",
 		"connect-history-api-fallback": "1.4.0",
 		"cookie-parser": "~1.4.3",
+		"copy-webpack-plugin": "^4.2.3",
 		"dotenv": "^4.0.0",
 		"express": "~4.16.2",
 		"jquery": "3.2.1",
 		"lodash": "^4.17.4",
+		"monaco-editor": "^0.10.1",
 		"morgan": "^1.9.0",
 		"object-assign": "4.1.1",
 		"react": "16.0.0",
 		"react-dom": "16.0.0",
+		"react-monaco-editor": "^0.12.0",
 		"react-redux": "5.0.6",
 		"react-router": "4.2.0",
 		"react-router-dom": "^4.2.2",
@@ -42,7 +45,9 @@
 		"redux-logger": "^3.0.6",
 		"redux-thunk": "2.2.0",
 		"request": "^2.81.0",
-		"request-promise": "^4.2.1"
+		"request-promise": "^4.2.1",
+		"showdown": "^1.8.4",
+		"styled-components": "^2.2.4"
 	},
 	"devDependencies": {
 		"autoprefixer": "7.1.6",
@@ -88,7 +93,13 @@
 		"type": "git",
 		"url": "git+https://github.com/robherley/cs546-cloud-markdown.git"
 	},
-	"keywords": ["react", "redux", "express", "mongo", "markdown"],
+	"keywords": [
+		"react",
+		"redux",
+		"express",
+		"mongo",
+		"markdown"
+	],
 	"contributors": [
 		"Rob Herley <rherley@stevens.edu> (https://robherley.me)",
 		"Jonathan Pavlik <jpavlik1@stevens.edu> (https://github.com/gluaxspeed/)",

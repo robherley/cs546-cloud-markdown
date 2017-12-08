@@ -35,5 +35,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`🌋 Listening on port: ${port}`);
+	console.log(`🌋 [${contentPath}] Listening on port: ${port}`);
 });

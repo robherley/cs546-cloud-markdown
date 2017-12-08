@@ -13,12 +13,11 @@ import { BrowserRouter } from 'react-router-dom';
 // Components
 import App from './components/App';
 import HomePage from './components/home/HomePage';
-import TestPage from './components/test/TestPage';
+import ReduxPage from './components/redux/ReduxPage';
 import AboutPage from './components/about/AboutPage';
 
 // Styling (thinking sass too)
-import './styles/styles.css';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './styles/styles.scss';
 
 const store = configureStore();
 
@@ -28,7 +27,7 @@ ReactDOM.render(
 			<App>
 				<Switch>
 					<Route exact path="/" component={HomePage} />
-					<Route path="/test" component={TestPage} />
+					<Route path="/redux" component={ReduxPage} />
 					<Route path="/about" component={AboutPage} />
 				</Switch>
 			</App>

@@ -5,6 +5,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 
 const GLOBALS = {
@@ -65,7 +66,13 @@ export default {
 				},
 				context: '/'
 			}
-		})
+		}),
+		new CopyWebpackPlugin([
+			{
+				from: 'node_modules/monaco-editor/min/vs',
+				to: 'vs'
+			}
+		])
 	],
 	module: {
 		rules: [
@@ -96,7 +103,10 @@ export default {
 				loader:
 					'url-loader?limit=10000&mimetype=image/svg+xml&name=[name].[ext]'
 			},
-			{ test: /\.(jpe?g|png|gif)$/i, loader: 'file-loader?name=[name].[ext]' },
+			{
+				test: /\.(jpe?g|png|gif)$/i,
+				loader: 'file-loader?name=[name].[ext]'
+			},
 			{ test: /\.ico$/, loader: 'file-loader?name=[name].[ext]' },
 			{
 				test: /(\.css|\.scss|\.sass)$/,
