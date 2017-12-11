@@ -1,7 +1,7 @@
 const getTest = async (req, res) => {
 	try {
 		res.status(200).json({
-			msg: 'Hello from the server!'
+			msg: 'Change from the server!'
 		});
 	} catch (err) {
 		res.status(400).json({
