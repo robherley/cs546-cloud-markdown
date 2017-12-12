@@ -13,14 +13,9 @@ const session = require('express-session');
 const expressValidator = require('express-validator');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const mongo = require('mongodb');
-const mongoose = require('mongoose');
 
-//Connect to Mongo DB
-mongoose.connect('mongodb://localhost/Stratus', {
-  useMongoClient: true
-});
-const db = mongoose.connection;
+//db
+require('./db/index');
 
 // Middleware galore
 app.use(morgan('dev')); // logging

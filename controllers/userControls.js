@@ -1,6 +1,7 @@
+const User = require('../models/user');
+const uuidv4 = require('uuid/v4');
 
-
-const register = (req, res) => {
+const register = async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const username = req.body.username;
@@ -22,11 +23,24 @@ const register = (req, res) => {
     });
     return;
   }
+
+  let newUser = new User({
+    name: name,
+    email: email,
+    username: username,
+    password: password
+  });
+
+  await User.newUser(newUser, (err, user) => {
+    if(err) throw err;
+      console.log(user);
+  })
+
   res.status(200).json({
       test: 'register'
     });
 }
 
-module.exports = (app) => {
-  app.post('/api/v1/register', register);
-}
+module.exports = {
+  register
+};
