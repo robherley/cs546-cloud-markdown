@@ -45,3 +45,18 @@ module.exports.newUser = async (newUser, callback) => {
     });
   });
 }
+
+module.exports.getUserByUsername = (username, callback) => {
+  User.findOne({username: username}, callback);
+}
+
+module.exports.getUserById =  (id, callback) => {
+  User.findById(id, callback);
+}
+
+module.exports.comparePassword =  (possiblePass, hash, callback) => {
+  bcrypt.compare(possiblePass, hash,  (err, match) => {
+    if(err) throw err;
+    callback(null, match);
+  });
+}
