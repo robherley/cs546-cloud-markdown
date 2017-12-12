@@ -63,7 +63,7 @@ const register = async (req, res) => {
   res.status(201).json({
       user: newUser
     });
-}
+};
 
 passport.use(new LocalStrategy((username, password, done) => {
   console.log(User);
@@ -85,7 +85,7 @@ passport.use(new LocalStrategy((username, password, done) => {
     });
 
   });
-}))
+}));
 
 passport.serializeUser(async (user, done) => {
   done(null, user.id);
@@ -100,13 +100,43 @@ passport.deserializeUser(async (id, done) => {
 const login = (req, res) => {
   console.log('in login');
   const username = req.body.username;
-  res.status(201).json({
-      login: 'success',
-      username: username
+  res.status(200).json({
+      msg: 'login success'
     });
+};
+
+const logout = (req, res) => {
+  req.logout()
+  res.status(200).json({
+    msg: 'logout success'
+  });
+};
+
+const isAuthUser = (req, res, next) => {
+  if(req.isAuthenticated()) {
+    return next();
+  } else {
+    res.status(403).json({
+      error: 'Not authenticated'
+    });
+  }
+};
+
+const getUsersFiles = (req, res) => {
+  User.getUserById(req.params.userId, (err, user) => {
+    if(err) throw err;
+    console.log('u', user, user.files);
+
+    res.status(200).json({
+      files: user.files
+    });
+  });
 };
 
 module.exports = {
   register,
-  login
+  login,
+  logout,
+  isAuthUser,
+  getUsersFiles
 };
