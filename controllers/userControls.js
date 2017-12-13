@@ -123,9 +123,15 @@ const isAuthUser = (req, res, next) => {
 };
 
 const getUsersFiles = (req, res) => {
+  if(req.user.id != req.params.userId) {
+    res.status(403).json({
+      error: "Invalid permission"
+    });
+    return;
+  }
+
   User.getUserById(req.params.userId, (err, user) => {
     if(err) throw err;
-    console.log('u', user, user.files);
 
     res.status(200).json({
       files: user.files
