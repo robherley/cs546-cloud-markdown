@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
+const User = require('./user');
+
 
 const fileSchema = mongoose.Schema({
   _id: {
@@ -27,10 +29,19 @@ const fileSchema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('File', fileSchema);
+const File = mongoose.model('File', fileSchema);
 
-module.exports = fileSchema;
+const newFile = (newFile, callback) => {
+  newFile.save(callback);
+};
 
-module.exports.newFile = () => {
+const getFileById = (id, callback) => {
 
+};
+
+module.exports = {
+  File,
+  fileSchema,
+  newFile,
+  getFileById
 };

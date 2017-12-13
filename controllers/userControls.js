@@ -66,16 +66,13 @@ const register = async (req, res) => {
 };
 
 passport.use(new LocalStrategy((username, password, done) => {
-  console.log(User);
    User.getUserByUsername(username, (err, user) => {
-    console.log('here uerr');
     if(err) throw err;
     if(!user) {
       return done(null, false, {error: 'Unknown User'});
     }
 
      User.comparePassword(password, user.password, (err, match) => {
-      console.log('here perr');
       if(err) throw err;
       if(match) {
         return done(null, user);
@@ -123,14 +120,8 @@ const isAuthUser = (req, res, next) => {
 };
 
 const getUsersFiles = (req, res) => {
-  if(req.user.id != req.params.userId) {
-    res.status(403).json({
-      error: "Invalid permission"
-    });
-    return;
-  }
 
-  User.getUserById(req.params.userId, (err, user) => {
+  User.getUserById(req.user.id, (err, user) => {
     if(err) throw err;
 
     res.status(200).json({
@@ -139,10 +130,30 @@ const getUsersFiles = (req, res) => {
   });
 };
 
+const updateUser = (req, res) => {
+  let update = {};
+  const id = req.user.id;
+ 
+  Object.keys(req.body).forEach((key) => {
+    if(key !== '_id') {
+      update[key]= req.body[key];
+    }
+  });
+
+  User.updateUser(id, update, (err, user) => {
+    if(err) throw err;
+    res.status(200).json({
+      user: user
+    });
+  });
+
+};
+
 module.exports = {
   register,
   login,
   logout,
   isAuthUser,
-  getUsersFiles
+  getUsersFiles,
+  updateUser
 };

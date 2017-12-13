@@ -31,7 +31,7 @@ const userSchema = mongoose.Schema({
   },
   files: {
     type: [fileSchema],
-     default: []
+    default: []
   }
 });
 
@@ -60,3 +60,21 @@ module.exports.comparePassword =  (possiblePass, hash, callback) => {
     callback(null, match);
   });
 }
+
+module.exports.updateUser = (id, updates, callback) => {
+  if(updates[password].length !== 0) { 
+    bcrypt.genSalt(10, async (err, salt) => {
+      bcrypt.hash(updates.password, salt, async (err, hash) => {
+        updates.password = hash;
+      });
+    });
+  }
+  User.findOneAndUpdate(
+    { _id: id },
+    {
+      $set: updates
+    },
+    { new: true },
+    callback
+  );
+};
