@@ -1,19 +1,36 @@
+// May not use this
 // @import '~carbon-components/scss/globals/scss/styles.scss';
-// Not sure what to use yet
 
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed');
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 body {
 	margin: 0;
 	overflow: hidden;
-	font-family: 'Roboto Condensed', sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	background-color: #f1f1f1;
 }
 
 .dark-theme {
 	background-color: #282a36;
 	color: #f1f1f1;
+}
+
+pre {
+	padding: 1em;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
+}
+
+pre > code {
+	background-color: rgba(255, 255, 255, 0);
+}
+
+code {
+	padding: 0.5em;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
 }

@@ -1,3 +1,6 @@
 export default {
-	sample: ''
+	editor: {
+		content: '',
+		css: ''
+	}
 };

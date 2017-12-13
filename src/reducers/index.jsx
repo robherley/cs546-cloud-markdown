@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import sample from './sampleReducer';
+import editor from './editorReducer';
+import sample from './editorReducer';
 
 const rootReducer = combineReducers({
-	sample
+	sample,
+	editor
 });
 
 export default rootReducer;

@@ -1,10 +1,17 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import showdown from 'showdown';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { dark } from '../../config/editor_themes';
+import { updateContent, updateCSS } from '../../actions/editorActions';
 
 const converter = new showdown.Converter();
-let timer;
+const Separator = styled.div`
+	width: 2px;
+	height: 100%;
+	background-color: rgb(81, 82, 86);
+`;
 
 // Link to understand Monaco themes:
 // https://microsoft.github.io/monaco-editor/playground.html#customizing-the-appearence-exposed-colors
@@ -12,15 +19,11 @@ let timer;
 class Editor extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			code: '# Welcome To Stratus!\nType here to get started!',
-			style: ''
-		};
 	}
 
 	componentDidMount() {
 		this.refs.renderedFromMD.innerHTML = converter.makeHtml(
-			`${this.state.code} <style>${this.state.style}</style>`
+			`${this.props.content} <style>${this.props.css}</style>`
 		);
 	}
 
@@ -33,21 +36,14 @@ class Editor extends React.Component {
 	}
 
 	onChange(newValue, e) {
+		this.props.updateContent(newValue);
 		this.refs.renderedFromMD.innerHTML = converter.makeHtml(
-			`${newValue} <style>${this.state.style}</style>`
+			`${newValue} <style>${this.props.code}</style>`
 		);
-		// maybe a timeout feature to reduce lag on low power devices
-		// if (timer) clearTimeout(timer);
-		// timer = setTimeout(() => {
-		// 	console.log(e);
-		// 	this.refs.renderedFromMD.innerHTML = converter.makeHtml(
-		// 		`${newValue} <style>${this.state.style}</style>`
-		// 	);
-		// }, 300);
 	}
 
 	render() {
-		const { code, width } = this.state;
+		const { content } = this.props;
 		const options = {
 			selectOnLineNumbers: true,
 			automaticLayout: true,
@@ -62,17 +58,18 @@ class Editor extends React.Component {
 			<div style={{ display: 'flex', height: '95vh', width: '100vw' }}>
 				<MonacoEditor
 					language="markdown"
-					width="50%"
+					width="100%"
 					theme="strat-dark"
-					value={code}
+					value={content}
 					options={options}
 					onChange={(x, y) => this.onChange(x, y)}
 					editorDidMount={(x, y) => this.editorDidMount(x, y)}
 					editorWillMount={x => this.editorWillMount(x)}
 				/>
+				<Separator />
 				<div
 					className="dark-theme"
-					style={{ width: '50%', padding: '1em 2em' }}
+					style={{ width: '100%', padding: '1em 2em' }}
 					ref="renderedFromMD"
 				/>
 			</div>
@@ -80,4 +77,10 @@ class Editor extends React.Component {
 	}
 }
 
-export default Editor;
+export default connect(
+	state => ({
+		content: state.editor.content,
+		css: state.editor.css
+	}),
+	{ updateContent, updateCSS }
+)(Editor);
