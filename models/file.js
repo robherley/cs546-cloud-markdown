@@ -31,17 +31,15 @@ const fileSchema = mongoose.Schema({
 
 const File = mongoose.model('File', fileSchema);
 
-const newFile = (newFile, callback) => {
+File.newFile = (newFile, callback) => {
   newFile.save(callback);
 };
 
-const getFileById = (id, callback) => {
+File.getFileById = (id, callback) => {
 
 };
 
 module.exports = {
   File,
-  fileSchema,
-  newFile,
-  getFileById
+  fileSchema
 };

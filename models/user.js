@@ -61,20 +61,30 @@ module.exports.comparePassword =  (possiblePass, hash, callback) => {
   });
 }
 
-module.exports.updateUser = (id, updates, callback) => {
-  if(updates[password].length !== 0) { 
-    bcrypt.genSalt(10, async (err, salt) => {
-      bcrypt.hash(updates.password, salt, async (err, hash) => {
+module.exports.updateUser = async (id, updates, callback) => {
+  if(updates.password) { 
+    await bcrypt.genSalt(10, async (err, salt) => {
+      await bcrypt.hash(updates.password, salt, async (err, hash) => {
         updates.password = hash;
+        await User.findOneAndUpdate(
+          { _id: id },
+          {
+            $set: updates
+          },
+          { new: true },
+          callback
+        );
       });
     });
+  } else {
+    await User.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: updates
+      },
+      { new: true },
+      callback
+    );
   }
-  User.findOneAndUpdate(
-    { _id: id },
-    {
-      $set: updates
-    },
-    { new: true },
-    callback
-  );
+  
 };

@@ -130,7 +130,7 @@ const getUsersFiles = (req, res) => {
   });
 };
 
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
   let update = {};
   const id = req.user.id;
  
@@ -140,7 +140,7 @@ const updateUser = (req, res) => {
     }
   });
 
-  User.updateUser(id, update, (err, user) => {
+  await User.updateUser(id, update, (err, user) => {
     if(err) throw err;
     res.status(200).json({
       user: user
