@@ -39,12 +39,55 @@ File.loadFile = (id, callback) => {
   
 };
 
-File.updateFile = (id, updates, callback) => {
-
+File.updateFile = async (uid, fid, updates, callback) => {
+  await User.findOneAndUpdate(
+    { 
+      _id: uid,
+      'files._id': fid
+    },
+    {
+      $set: {
+        "files.$.filename": updates.filename,
+        "files.$.lastModified": updates.lastModified
+      }
+    },
+    {
+      "projection": {
+        "files": {
+          $elemMatch: {
+            _id: fid
+          }
+        }
+      },
+      new: true
+    },
+    callback
+  );
 };
 
-File.getFileById = (id, callback) => {
-  File.findById(id, callback);
+File.getFileById = async (id, callback) => {
+  await File.findById(id, callback);
+};
+
+File.deleteFileById = async (id, callback) => {
+  await User.findOneAndUpdate(
+    { 'files._id': id },
+    {
+      $pull: {
+        files: { _id: id }
+      }
+    },
+    {
+      "projection": {
+        "files": {
+          $elemMatch: {
+            _id: id
+          }
+        }
+      },
+    },
+    callback
+  );
 };
 
 module.exports = {
