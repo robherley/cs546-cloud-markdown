@@ -95,7 +95,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 const login = (req, res) => {
-  console.log('in login');
   const username = req.body.username;
   res.status(200).json({
       msg: 'login success'

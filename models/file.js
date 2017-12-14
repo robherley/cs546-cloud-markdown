@@ -35,8 +35,16 @@ File.newFile = (newFile, callback) => {
   newFile.save(callback);
 };
 
-File.getFileById = (id, callback) => {
+File.loadFile = (id, callback) => {
+  
+};
 
+File.updateFile = (id, updates, callback) => {
+
+};
+
+File.getFileById = (id, callback) => {
+  File.findById(id, callback);
 };
 
 module.exports = {

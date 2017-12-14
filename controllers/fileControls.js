@@ -5,11 +5,14 @@ const uuidv4 = require('uuid/v4');
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
 	const fcontent = req.body.content;
+  const fstyle = req.body.style;
+
   const id = req.user.id;
   let userFiles = req.user.files;
 
 	const newFile = new File({
-		filename: fname
+		filename: fname,
+    madeby: id
 	});
 
 	File.newFile(newFile, (err, file) => {
@@ -30,30 +33,25 @@ const createFile = (req, res) => {
     });
   })
   //put file in s3
-  res.status(201).json({
-      msg: userFiles
-    });
+  
 };
 
 const updateFile = (req, res) => {
-
-
   const fname = req.body.fileName;
   const fcontent = req.body.content;
+  const fstyle = req.body.style;
+  const fid = req.body.fileId;
 
-  const newFile = new File({
-    filename: fname
+  const uid = req.user.id;
+  let updates = {
+    filename: fname,
+    lastModified: Date.now()
+  };
+
+  const upFile = File.updateFile(fid, updates, (err, file) => {
+    if(err) throw err;
+    return file;
   });
-
-  File.newFile(newFile, (err, file) => {
-    if(err) {
-      res.status(424).json({
-        error: err
-      });
-      return;
-    }
-  });
-
 
   //update file in s3
 };
