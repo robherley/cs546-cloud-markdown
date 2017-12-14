@@ -16,7 +16,8 @@ import HomePage from './components/home/HomePage';
 import ReduxPage from './components/redux/ReduxPage';
 import AboutPage from './components/about/AboutPage';
 
-// Styling (thinking sass too)
+// Styling
+import 'pivotal-ui/components.css';
 import './styles/styles.scss';
 
 const store = configureStore();

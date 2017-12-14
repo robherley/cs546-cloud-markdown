@@ -12,7 +12,7 @@ const converter = new showdown.Converter();
 const Separator = styled.div`
 	width: 2px;
 	height: 100%;
-	background-color: rgb(81, 82, 86);
+	background-color: rgb(55, 61, 73);
 `;
 
 const ContentContainer = styled.div`
@@ -35,8 +35,8 @@ class Editor extends React.Component {
 	}
 
 	updatePreview() {
-		if (this.refs.renderedFromMD) {
-			this.refs.renderedFromMD.innerHTML = converter.makeHtml(
+		if (this.refs.eyeFrame) {
+			this.refs.eyeFrame.contentWindow.document.body.innerHTML = converter.makeHtml(
 				`${this.props.content} <style>${this.props.css}</style>`
 			);
 		}
@@ -50,7 +50,13 @@ class Editor extends React.Component {
 				<Tabs defaultActiveKey={1} className="custom-tabs">
 					<Tab eventKey={1} title="Markdown">
 						<ContentContainer>
-							<Monaco file="test.md" width={width} />
+							<Monaco
+								file="test.md"
+								width={width}
+								onExport={() =>
+									this.refs.eyeFrame.contentWindow.print()
+								}
+							/>
 						</ContentContainer>
 					</Tab>
 					<Tab
@@ -58,14 +64,13 @@ class Editor extends React.Component {
 						title="Preview"
 						onEntered={() => this.updatePreview()}
 					>
-						<div
+						<iframe
 							style={{
 								height: '95vh',
-								padding: '1em 2em',
-								backgroundColor: '#282a36',
-								width: width
+								width: width / 2
 							}}
-							ref="renderedFromMD"
+							frameBorder="0"
+							ref="eyeFrame"
 						/>
 					</Tab>
 				</Tabs>
@@ -73,15 +78,21 @@ class Editor extends React.Component {
 		} else {
 			return (
 				<ContentContainer>
-					<Monaco file="test.md" width={width / 2} />
+					<Monaco
+						file="test.md"
+						width={width / 2}
+						onExport={() =>
+							this.refs.eyeFrame.contentWindow.print()
+						}
+					/>
 					<Separator />
-					<div
+					<iframe
 						style={{
 							height: '95vh',
-							padding: '1em 2em',
 							width: width / 2
 						}}
-						ref="renderedFromMD"
+						frameBorder="0"
+						ref="eyeFrame"
 					/>
 				</ContentContainer>
 			);

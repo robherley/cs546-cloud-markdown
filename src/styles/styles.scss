@@ -5,12 +5,29 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
+$standout-font: 'Barlow Semi Condensed', sans-serif;
+$normal-font: 'Open Sans', sans-serif;
+
+$header: rgb(55, 61, 73);
+$dark-grey: #282a36;
+$white: #f1f1f1;
+$blue: #0496ff;
+$red: #eb4511;
+
 body {
 	margin: 0;
 	overflow: hidden;
-	font-family: 'Open Sans', sans-serif;
-	background-color: #282a36;
-	color: #f1f1f1;
+	font-family: $normal-font;
+	background-color: $dark-grey;
+	color: $white;
+}
+
+a:hover,
+a:active,
+a:focus {
+	color: $white;
+	text-decoration: none !important;
+	outline: none !important;
 }
 
 pre {
@@ -29,6 +46,10 @@ code {
 	border-radius: 4px;
 }
 
+ul {
+	margin: 0;
+}
+
 .tab-pane {
 	padding: 0;
 }
@@ -39,47 +60,27 @@ code {
 	justify-content: space-around;
 }
 
+// Overrides
 .btn-brand-alt {
-	border-color: #f1f1f1 !important;
-	color: #f1f1f1 !important;
+	border-color: $white !important;
+	color: $white !important;
 }
 
-.tab-simple > .nav.nav-tabs {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-	background-clip: padding-box;
-}
-
-.tab-simple > .nav > li {
-	margin-bottom: 0;
+.tab-content {
+	background-color: $dark-grey !important;
 }
 
 .tab-simple > .nav > li > a {
-	margin-right: 0;
-	border: 0;
-	border-radius: 0;
-	padding: 8px 16px;
-	line-height: 16px;
+	font-family: $standout-font;
 	color: rgb(81, 82, 86);
-	font-weight: 600;
 }
 
 .tab-simple > .nav > li > a:hover {
-	color: #f1f1f1;
+	color: $white;
 }
 
 .tab-simple > .nav > li > a:hover:after {
-	content: '';
-	display: block;
-	height: 1px;
-	width: 100%;
-	background-color: #f1f1f1;
-	bottom: -1px;
-	left: 0px;
-	position: absolute;
-}
-
-.tab-simple > .nav > li.disabled > a:hover:after {
-	display: none;
+	background-color: $white;
 }
 
 .tab-simple > .nav > li:hover {
@@ -88,24 +89,15 @@ code {
 	transition-property: background-color, color, opacity;
 }
 
-.tab-simple > .nav > li.active {
-	cursor: default;
-	transition-property: none;
-}
-
 .tab-simple > .nav > li.active > a {
-	border: 0;
-	background-color: transparent;
-	color: #f1f1f1;
+	color: $white;
 }
 
 .tab-simple > .nav > li.active > a:after {
-	content: '';
-	display: block;
-	height: 2px;
-	width: 100%;
 	background-color: #0496ff;
-	bottom: -1px;
-	left: 0px;
-	position: absolute;
+}
+
+.flyout {
+	background-color: rgba(34, 36, 46, 0.8) !important;
+	color: $dark-grey !important;
 }

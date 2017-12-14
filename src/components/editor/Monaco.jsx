@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import styled from 'styled-components';
 import { dark } from '../../config/editor_themes';
-import 'pivotal-ui/css/iconography';
 import { DangerButton } from 'pivotal-ui/react/buttons';
 import { connect } from 'react-redux';
 import { updateContent } from '../../actions/editorActions';
 import Icon from '@fortawesome/react-fontawesome';
 import { faCode, faCopy, faCog } from '@fortawesome/fontawesome-free-solid';
 import { Tooltip, TooltipTrigger } from 'pivotal-ui/react/tooltip';
+import { Flyout } from 'pivotal-ui/react/flyout';
 import { BrandButton } from 'pivotal-ui/react/buttons';
 
 // Link to understand Monaco themes:
@@ -35,6 +35,7 @@ const FileName = styled.div`
 class Monaco extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {};
 	}
 
 	editorWillMount(monaco) {
@@ -61,6 +62,8 @@ class Monaco extends Component {
 			}
 		};
 		const { width, file } = this.props;
+		const { open } = this.state;
+		const children = <h1>Test!</h1>;
 		return (
 			<Wrapper width={width}>
 				<Bar>
@@ -77,7 +80,7 @@ class Monaco extends Component {
 							<BrandButton
 								alt
 								small
-								onClick={() => this.props.loadSampleData()}
+								onClick={() => this.props.onExport()}
 							>
 								<Icon icon={faCopy} size="1x" />
 							</BrandButton>
@@ -90,7 +93,7 @@ class Monaco extends Component {
 							<BrandButton
 								alt
 								small
-								onClick={() => this.props.loadSampleData()}
+								onClick={() => this.setState({ open: true })}
 							>
 								<Icon icon={faCog} size="1x" />
 							</BrandButton>
@@ -106,6 +109,14 @@ class Monaco extends Component {
 					onChange={(x, y) => this.onChange(x, y)}
 					editorDidMount={(x, y) => this.editorDidMount(x, y)}
 					editorWillMount={x => this.editorWillMount(x)}
+				/>
+				<Flyout
+					{...{
+						open,
+						header: 'Preferences',
+						children,
+						close: () => this.setState({ open: false })
+					}}
 				/>
 			</Wrapper>
 		);
