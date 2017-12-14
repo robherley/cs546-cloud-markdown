@@ -36,9 +36,13 @@ class Editor extends React.Component {
 
 	updatePreview() {
 		if (this.refs.eyeFrame) {
-			this.refs.eyeFrame.contentWindow.document.body.innerHTML = converter.makeHtml(
-				`${this.props.content} <style>${this.props.css}</style>`
-			);
+			let { document: eyeDoc } = this.refs.eyeFrame.contentWindow;
+			eyeDoc.body.innerHTML = converter.makeHtml(this.props.content);
+			let style = eyeDoc.createElement('style');
+			style.innerHTML = `${
+				this.props.css
+			} @page {color: inherit; size: auto; margin: 0;}`;
+			eyeDoc.body.appendChild(style);
 		}
 	}
 
@@ -67,7 +71,7 @@ class Editor extends React.Component {
 						<iframe
 							style={{
 								height: '95vh',
-								width: width / 2
+								width: width
 							}}
 							frameBorder="0"
 							ref="eyeFrame"

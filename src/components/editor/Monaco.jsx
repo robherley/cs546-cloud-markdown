@@ -6,7 +6,12 @@ import { DangerButton } from 'pivotal-ui/react/buttons';
 import { connect } from 'react-redux';
 import { updateContent } from '../../actions/editorActions';
 import Icon from '@fortawesome/react-fontawesome';
-import { faCode, faCopy, faCog } from '@fortawesome/fontawesome-free-solid';
+import {
+	faCode,
+	faCopy,
+	faCog,
+	faUpload
+} from '@fortawesome/fontawesome-free-solid';
 import { Tooltip, TooltipTrigger } from 'pivotal-ui/react/tooltip';
 import { Flyout } from 'pivotal-ui/react/flyout';
 import { BrandButton } from 'pivotal-ui/react/buttons';
@@ -18,7 +23,18 @@ const Bar = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0.3em 2em;
+	padding: 0.3em 1em;
+`;
+
+const CountBar = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5em 1em;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	font-family: 'Barlow Semi Condensed', sans-serif;
+	font-size: 0.8em;
 `;
 
 const Wrapper = styled.div`
@@ -61,7 +77,7 @@ class Monaco extends Component {
 				enabled: false
 			}
 		};
-		const { width, file } = this.props;
+		const { width, file, content } = this.props;
 		const { open } = this.state;
 		const children = <h1>Test!</h1>;
 		return (
@@ -71,7 +87,20 @@ class Monaco extends Component {
 						<Icon icon={faCode} size="1x" />
 						<FileName>{file}</FileName>
 					</div>
-					<div className="simple-row" style={{ width: '120px' }}>
+					<div className="simple-row" style={{ width: '170px' }}>
+						<TooltipTrigger
+							tooltip="Import"
+							trigger="hover"
+							theme="light"
+						>
+							<BrandButton
+								alt
+								small
+								onClick={() => confirm('Upload a File!')}
+							>
+								<Icon icon={faUpload} size="1x" />
+							</BrandButton>
+						</TooltipTrigger>
 						<TooltipTrigger
 							tooltip="Export"
 							trigger="hover"
@@ -104,12 +133,16 @@ class Monaco extends Component {
 					language="markdown"
 					width="100%"
 					theme="strat-dark"
-					value={this.props.content}
+					value={content}
 					options={options}
 					onChange={(x, y) => this.onChange(x, y)}
 					editorDidMount={(x, y) => this.editorDidMount(x, y)}
 					editorWillMount={x => this.editorWillMount(x)}
 				/>
+				<CountBar className="condensed-text">
+					Words: {(content.match(/\S+/g) || []).length} Chars:{' '}
+					{content.length}
+				</CountBar>
 				<Flyout
 					{...{
 						open,

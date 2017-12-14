@@ -22,7 +22,7 @@ module.exports = {
 		hot: true,
 		port: 4444,
 		proxy: {
-			'/api': 'http://localhost:4445'
+			'/': 'http://localhost:4445'
 		}
 	},
 	plugins: [
