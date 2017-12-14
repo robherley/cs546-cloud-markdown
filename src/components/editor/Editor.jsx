@@ -47,7 +47,7 @@ class Editor extends React.Component {
 		if (width < 892) {
 			// This is a nice number
 			return (
-				<Tabs defaultActiveKey={1} className="dark-theme custom-tabs">
+				<Tabs defaultActiveKey={1} className="custom-tabs">
 					<Tab eventKey={1} title="Markdown">
 						<ContentContainer>
 							<Monaco file="test.md" width={width} />
@@ -62,9 +62,9 @@ class Editor extends React.Component {
 							style={{
 								height: '95vh',
 								padding: '1em 2em',
+								backgroundColor: '#282a36',
 								width: width
 							}}
-							className="dark-theme"
 							ref="renderedFromMD"
 						/>
 					</Tab>
@@ -81,7 +81,6 @@ class Editor extends React.Component {
 							padding: '1em 2em',
 							width: width / 2
 						}}
-						className="dark-theme"
 						ref="renderedFromMD"
 					/>
 				</ContentContainer>

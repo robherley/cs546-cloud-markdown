@@ -24,6 +24,7 @@ const Bar = styled.div`
 const Wrapper = styled.div`
 	display: flex;
 	flex-direction: column;
+	background-color: #282a36;
 	width: ${props => props.width}px;
 `;
 
@@ -62,7 +63,7 @@ class Monaco extends Component {
 		const { width, file } = this.props;
 		return (
 			<Wrapper width={width}>
-				<Bar className="dark-theme">
+				<Bar>
 					<div className="simple-row" style={{ width: '100px' }}>
 						<Icon icon={faCode} size="1x" />
 						<FileName>{file}</FileName>
