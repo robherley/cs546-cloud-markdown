@@ -3,7 +3,7 @@ import Editor from '../editor/Editor';
 
 class HomePage extends React.Component {
 	render() {
-		return <Editor />;
+		return <div>testing</div>;
 	}
 }
 

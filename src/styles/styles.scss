@@ -60,10 +60,23 @@ ul {
 	justify-content: space-around;
 }
 
-// Overrides
 .btn-brand-alt {
 	border-color: $white !important;
 	color: $white !important;
+	opacity: 0.6;
+	&:hover {
+		color: $blue !important;
+		border-color: $blue !important;
+		opacity: 1;
+	}
+}
+
+.btn-brand-alt-danger {
+	@extend .btn-brand-alt;
+	&:hover {
+		color: $red !important;
+		border-color: $red !important;
+	}
 }
 
 .tab-content {

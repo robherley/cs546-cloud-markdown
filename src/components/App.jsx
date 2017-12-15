@@ -5,15 +5,11 @@ import { withRouter } from 'react-router';
 import { changeWidth } from '../actions/widthActions';
 
 class App extends React.Component {
-	componentWillMount() {
+	componentDidMount() {
 		this.props.changeWidth(window.innerWidth);
 		window.addEventListener('resize', () =>
 			this.props.changeWidth(window.innerWidth)
 		);
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener('resize');
 	}
 
 	render() {

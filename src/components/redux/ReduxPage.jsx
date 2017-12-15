@@ -6,7 +6,6 @@ import { DefaultButton } from 'pivotal-ui/react/buttons';
 
 class ReduxPage extends React.Component {
 	render() {
-		console.log(this.props);
 		return (
 			<div>
 				<h1>Test</h1>

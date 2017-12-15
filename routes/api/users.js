@@ -1,10 +1,15 @@
 const userAPI = require('../../controllers/userControls');
+const router = require('express').Router();
 const passport = require('passport');
 
-module.exports = (app) => {
-  app.post('/api/v1/user/register', userAPI.register),
-  app.post('/api/v1/user/login', passport.authenticate('local'), userAPI.login),
-  app.post('/api/v1/user/logout', userAPI.isAuthUser, userAPI.logout),
-  app.post('/api/v1/user/getfiles', userAPI.isAuthUser, userAPI.getUsersFiles),
-  app.post('/api/v1/user/update', userAPI.isAuthUser, userAPI.updateUser)
-};
+router.post('/api/v1/user/register', userAPI.register);
+router.post(
+	'/api/v1/user/login',
+	passport.authenticate('local'),
+	userAPI.login
+);
+router.post('/api/v1/user/logout', userAPI.isAuthUser, userAPI.logout);
+router.post('/api/v1/user/getfiles', userAPI.isAuthUser, userAPI.getUsersFiles);
+router.post('/api/v1/user/update', userAPI.isAuthUser, userAPI.updateUser);
+
+module.exports = router;
