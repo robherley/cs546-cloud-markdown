@@ -61,8 +61,8 @@ const register = async (req, res) => {
   })
 
   res.status(201).json({
-      user: newUser
-    });
+    user: newUser
+  });
 };
 
 passport.use(new LocalStrategy((username, password, done) => {

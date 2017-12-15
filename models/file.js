@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
 const User = require('./user');
 
-
 const fileSchema = mongoose.Schema({
   _id: {
     type: String,

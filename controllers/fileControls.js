@@ -1,6 +1,11 @@
 const { File } = require('../models/file');
 const User = require('../models/user');
 const uuidv4 = require('uuid/v4');
+const AWS = require('aws-sdk');
+AWS.config.region = 'us-east-2';
+const s3 = new AWS.S3();
+var credentials = new AWS.SharedIniFileCredentials();
+AWS.config.credentials = credentials;
 
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
@@ -38,8 +43,27 @@ const createFile = (req, res) => {
     res.status(200).json({
       user: user
     });
-  })
-  
+  });
+
+  let uploadFile = {
+    filename : newFile.filename,
+    content : fcontent,
+    style : fstyle
+  }
+  s3.putObject({
+    Bucket: `testing-cs546/${id}`, 
+    Key: `${newFile._id}.json`,
+    //makes the object a string to be put into the s3 bucket
+    Body: JSON.stringify(uploadFile), 
+    //makes it json on the s33 bucket (so you can read it without downloading)
+    ContentType: "application/json"
+  }, function(err,data) {
+    if(err) {
+      console.log(JSON.stringify(err));
+    } else {
+      console.log(JSON.stringify(data));
+    };
+  }); 
 };
 
 const updateFile = (req, res) => {
@@ -63,10 +87,31 @@ const updateFile = (req, res) => {
       file: file
     });
   });
+
+  let uploadFile = {
+    filename : newFile.filename,
+    content : fcontent,
+    style : fstyle
+  }
+  s3.putObject({
+    Bucket: `testing-cs546/${uid}`, 
+    Key: `${fid}.json`,
+    //makes the object a string to be put into the s3 bucket
+    Body: JSON.stringify(uploadFile), 
+    //makes it json on the s33 bucket (so you can read it without downloading)
+    ContentType: "application/json"
+  }, function(err,data) {
+    if(err) {
+      console.log(JSON.stringify(err));
+    } else {
+      console.log(JSON.stringify(data));
+    };
+  });
 };
 
 const deleteFile = (req, res) => {
   const fid = req.body.fileId;
+  const uid = req.user.id;
 
   File.deleteFileById(fid, (err, files) => {
     if(err) throw err;
@@ -76,20 +121,40 @@ const deleteFile = (req, res) => {
       files: files
     });
   });
+
+  s3.deleteObject({
+    //Bucket gets put into folder test-folder inside of the bucket testing-cs546
+    Bucket: `testing-cs546/${uid}`, 
+    Key: `${fid}.json`
+  }, function(err, data) {
+    if(err) {
+      console.log(JSON.stringify(err));
+    } else {
+      console.log(JSON.stringify(data));
+    }
+  });
 };
 
 const loadFile = (req, res) => {
   const fid = req.body.fileId;
+  const uid = req.user.id;
 
   File.getFileById(fid, (err, file) => {
     //grab file from s3 and read into json object
+    
     res.status(200).json({
-      filname: 's3file.filename',
+      filename: 's3file.filename',
       content: 's3file.content',
       style: 's3file.style'
     });
   });
-  
+
+  let file = s3.getObject({
+    Bucket : `testing-aws/${uid}`,
+    Key : `${fid}`
+  });
+
+
 };
 
 module.exports = {
