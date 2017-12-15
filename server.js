@@ -89,5 +89,5 @@ app.use((req, res, next) => {
 }, express.static(path.join(__dirname, contentPath)));
 
 app.listen(port, () => {
-	console.log(`🌋 [${contentPath}] Listening on port: ${port}`);
+	console.log(chalk.green(`🌋 [${contentPath}] Listening on port: ${port}`));
 });

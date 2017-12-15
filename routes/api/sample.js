@@ -13,6 +13,6 @@ const getTest = async (req, res) => {
 	}
 };
 
-router.get('/api/sample', (req, res) => res.send('Testing!!!'));
+router.get('/api/sample', (req, res) => res.json({ msg: 'Testing!!!' }));
 
 module.exports = router;

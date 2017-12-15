@@ -1,37 +1,34 @@
 const { File } = require('../models/file');
 const User = require('../models/user');
 const uuidv4 = require('uuid/v4');
+require('dotenv').config();
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
-//from s3 env file
-const IAM_USER_KEY = 'AKIAJTZOJ5MRJWXN5D7Q';
-const IAM_USER_SECRET = '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';
-const BUKET_NAME = 'stratus-testing-grounds';
-const s3 = new AWS.S3({
-  accessKeyId: IAM_USER_KEY,
-  secretAccessKey: IAM_USER_SECRET
-});
+AWS.config.accessKeyId = process.env.AWS_USER_KEY;
+AWS.config.secretAccessKey = process.env.AWS_USER_SECRET;
+const BUKET_NAME = 'stratus-prod';
+const s3 = new AWS.S3();
 
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
 	const fcontent = req.body.content;
-  const fstyle = req.body.style;
+	const fstyle = req.body.style;
 
-  const id = req.user.id;
-  let userFiles = req.user.files;
+	const id = req.user.id;
+	let userFiles = req.user.files;
 
 	const newFile = new File({
 		filename: fname,
-    madeby: id
+		madeby: id
 	});
 
 	File.newFile(newFile, (err, file) => {
-		if(err) {
-      res.status(424).json({
-        error: err
-      });
-      return;
-    }
+		if (err) {
+			res.status(424).json({
+				error: err
+			});
+			return;
+		}
 	});
 
   if(res.headerSet) {
@@ -218,19 +215,18 @@ const loadFile = (req, res) => {
       }
 
       res.status(200).json({
-        filname: data.filename,
+        filename: data.filename,
         content: data.content,
         style: data.style
       });
     });
-    //console.log(load);
+    
   });
-  
 };
 
 module.exports = {
-  createFile,
-  updateFile,
-  deleteFile,
-  loadFile
+	createFile,
+	updateFile,
+	deleteFile,
+	loadFile
 };

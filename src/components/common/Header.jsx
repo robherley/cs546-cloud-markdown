@@ -57,15 +57,12 @@ const Header = () => {
 				</Link>
 			</Row>
 			<Row>
-				<Link className="btn btn-brand-alt" to="/editor">
-					Editor
-				</Link>
-				<Link className="btn btn-brand-alt" to="/redux">
+				<Link className="btn btn-brand-alt" to="/">
 					My Files
 				</Link>
-				<Link className="btn btn-brand-alt-danger" to="/about">
+				<a className="btn btn-brand-alt-danger" href="/logout">
 					Log Out
-				</Link>
+				</a>
 			</Row>
 		</StyledNav>
 	);
