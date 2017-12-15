@@ -30,7 +30,8 @@ app.use(
 app.use(cookieParser()); // Parses cookies
 app.use(history()); // Polyfill for HTML5 history API (react-router uses this)
 
-// Serve static folder
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, contentPath)));
 
 //Express session

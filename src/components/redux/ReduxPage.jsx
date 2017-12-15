@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button } from 'carbon-components-react';
-import * as sampleActions from '../../actions/sampleActions';
+import { loadSampleData } from '../../actions/sampleActions';
+import { DefaultButton } from 'pivotal-ui/react/buttons';
 
 class ReduxPage extends React.Component {
 	render() {
-		const { sample, actions } = this.props;
+		console.log(this.props);
 		return (
 			<div>
 				<h1>Test</h1>
@@ -16,25 +16,18 @@ class ReduxPage extends React.Component {
 				</p>
 				<p>Spoiler: It's just a simple API fetch to the backend...</p>
 				<p>Open dev-tools to see the state change!</p>
-				<Button onClick={() => actions.loadSampleData()}>
+				<DefaultButton onClick={() => this.props.loadSampleData()}>
 					Click Me
-				</Button>
-				<p>{sample.msg}</p>
+				</DefaultButton>
+				{this.props.sample && <p>{this.props.sample.msg}</p>}
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = (state, ownProps) => {
-	return {
+export default connect(
+	state => ({
 		sample: state.sample
-	};
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		actions: bindActionCreators(sampleActions, dispatch)
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReduxPage);
+	}),
+	{ loadSampleData }
+)(ReduxPage);

@@ -22,7 +22,7 @@ module.exports = {
 		hot: true,
 		port: 4444,
 		proxy: {
-			'/api': 'http://localhost:4445'
+			'/': 'http://localhost:4445'
 		}
 	},
 	plugins: [
@@ -66,7 +66,7 @@ module.exports = {
 				exclude: /node_modules/,
 				loader: 'babel-loader',
 				query: {
-					presets: ['react', 'es2015']
+					presets: ['react', 'es2015', 'stage-2']
 				}
 			},
 			{ test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
