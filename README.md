@@ -24,7 +24,7 @@ Markdown files online.
 * Allowing users custom use of CSS and Styling their Markdown documents.
 * Some pre-set themes would be includes so development of those.
 * A file editor and renderer, and a storage for the files done via third party
-	technology.
+  technology.
 * Side by side editor and renderer would be the ideal situation.
 * Allowing the rendered document to be downloaded as a PDF.
 
@@ -37,12 +37,3 @@ Markdown files online.
 
 * `npm run dev`: Start the development server w/ hot reload (Webpack & Express)
 * `npm run prod`: Builds the static files and runs in production mode
-
-## Todo
-
-* ~~Finish Adding Redux, React-Router and other boilerplate~~
-* ~~Cleanup unnessary npm dependencies~~
-* ~~Database Proposal~~
-* Hook editor into redux
-* Figure out heroku or aws or something else
-* Get rid of this todo list and make a trello board to plan out everything

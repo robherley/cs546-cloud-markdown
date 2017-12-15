@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed');
+@import './pivotal.css';
+
+body {
+	background-color: #282a36;
+}
+
+.login-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+}
+
+.big-text {
+	font-size: 5em;
+	color: #0496ff;
+	font-family: 'Barlow Semi Condensed', sans-serif;
+	text-transform: uppercase;
+}
+
+.kinda-smaller {
+	font-size: 3em;
+	color: #eb4511;
+	padding-top: 0.2em;
+	padding-bottom: 0.5em;
+}
+
+.centered {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.col {
+	flex-direction: column;
+}
+
+.long {
+	width: 35vw;
+}
+
+.panel-body {
+	padding: 15px;
+}
+
+#toast-container > div {
+	box-shadow: none !important;
+}
+
+#toast-container > .toast {
+	background-image: none !important;
+}
+
+#toast-container > .toast:before {
+	position: fixed;
+	font-family: FontAwesome;
+	font-size: 24px;
+	line-height: 18px;
+	float: left;
+	color: #fff;
+	padding-right: 0.5em;
+	margin: auto 0.5em auto -1.5em;
+}
+
+#toast-container > .toast-error:before {
+	content: '\f00d';
+}
+
+#toast-container > .toast-success:before {
+	content: '\f00c';
+}
+
+#particles {
+	z-index: -1;
+	width: 99vw;
+	height: 99vh;
+	position: absolute;
+	top: 0;
+	left: 0;
+}

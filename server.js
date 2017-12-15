@@ -19,6 +19,11 @@ const applyRoutes = require('./routes');
 // Init Database
 require('./db/index');
 
+// Handlebars View For Login Page
+app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
+
 // Middleware galore
 app.use(morgan('dev')); // logging
 app.use(compression()); // gzip
@@ -47,8 +52,8 @@ app.use(passport.session());
 //Express Validator
 app.use(
 	expressValidator({
-		errorFormatter: function(param, msg, value) {
-			var namespace = param.split('.'),
+		errorFormatter: (param, msg, value) => {
+			let namespace = param.split('.'),
 				root = namespace.shift(),
 				formParam = root;
 
@@ -64,22 +69,24 @@ app.use(
 	})
 );
 
-// Add Routes
+// API Routes
 applyRoutes(app);
 
-const checkLogin = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		return next();
-	} else {
-		res.redirect('/api/sample');
-	}
-};
+// Rendered Routes
+app.get('/login', (req, res) => res.render('login'));
+app.get('/register', (req, res) => res.render('register'));
 
 // Static Files (favicon, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(checkLogin, express.static(path.join(__dirname, contentPath)));
 
-applyRoutes(app);
+// Check for auth, serve react app
+app.use((req, res, next) => {
+	if (req.isAuthenticated()) {
+		return next();
+	} else {
+		res.redirect('/login');
+	}
+}, express.static(path.join(__dirname, contentPath)));
 
 app.listen(port, () => {
 	console.log(`🌋 [${contentPath}] Listening on port: ${port}`);
