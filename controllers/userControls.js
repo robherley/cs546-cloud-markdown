@@ -58,7 +58,11 @@ const register = async (req, res) => {
       });
       return;
     }
-  })
+  });
+
+  if(res.headerSet) {
+    return;
+  }
 
   res.status(201).json({
       user: newUser
@@ -121,7 +125,12 @@ const isAuthUser = (req, res, next) => {
 const getUsersFiles = (req, res) => {
 
   User.getUserById(req.user.id, (err, user) => {
-    if(err) throw err;
+    if(err) {
+      res.status(200).json({
+        error: err
+      });
+      return;
+    }
 
     res.status(200).json({
       files: user.files
@@ -140,8 +149,14 @@ const updateUser = async (req, res) => {
   });
 
   await User.updateUser(id, update, (err, user) => {
-    if(err) throw err;
-    res.status(200).json({
+    if(err) {
+      res.status(500).json({
+        error: err
+      });
+      return;
+    }
+
+    res.status(202).json({
       user: user
     });
   });

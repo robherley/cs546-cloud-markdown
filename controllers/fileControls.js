@@ -31,127 +31,197 @@ const createFile = (req, res) => {
 		}
 	});
 
-	userFiles.push(newFile);
+  if(res.headerSet) {
+    return;
+  }
 
-	User.updateUser(id, { files: userFiles }, (err, user) => {
-		if (err) throw err;
+  userFiles.push(newFile);
 
-		//put file in s3
-		//file name as newFile._id
-		//filcontent as json with keys
-		//filename, content, style
-		//mapped to respective things
-		const s3File = {
-			filename: fname,
-			content: fcontent,
-			style: fstyle
-		};
+  User.updateUser(id, { files: userFiles }, (err, user) => {
+    if(err) {
+      res.status(500).json({
+        error: err
+      });
+      return;
+    }
 
-		s3.putObject(
-			{
-				Bucket: `${BUKET_NAME}/${id}`,
-				Key: `${newFile._id}.json`,
-				Body: JSON.stringify(s3File),
-				ContentType: 'application/json'
-			},
-			(err, data) => {
-				if (err) throw err;
-			}
-		);
+    //put file in s3
+    //file name as newFile._id
+    //filcontent as json with keys
+    //filename, content, style
+    //mapped to respective things
+    const s3File = {
+      filename: fname,
+      content: fcontent,
+      style: fstyle
+    };
 
-		res.status(200).json({
-			user: user
-		});
-	});
+    s3.putObject({
+      Bucket: `${BUKET_NAME}/${id}`,
+      Key: `${newFile._id}.json`,
+      Body: JSON.stringify(s3File),
+      ContentType: "application/json"
+    }, 
+    (err, data) => {
+      if(res.headerSet) {
+       return;
+      }
+      if(err) {
+        res.status(500).json({
+          error: err
+        });
+        return;
+      }
+    });
+
+    if(res.headerSet) {
+     return;
+    }
+
+    res.status(201).json({
+      user: user
+    });
+  })
+  
 };
 
 const updateFile = (req, res) => {
-	const fname = req.body.fileName;
-	const fcontent = req.body.content;
-	const fstyle = req.body.style;
-	const fid = req.body.fileId;
+  const fname = req.body.fileName;
+  const fcontent = req.body.content;
+  const fstyle = req.body.style;
+  const fid = req.body.fileId;
 
-	const uid = req.user.id;
-	let updates = {
-		filename: fname,
-		lastModified: new Date(Date.now()).toISOString()
-	};
+  const uid = req.user.id;
+  let updates = {
+    filename: fname,
+    lastModified: new Date(Date.now()).toISOString()
+  };
 
-	File.updateFile(uid, fid, updates, (err, file) => {
-		if (err) throw err;
-		//update file in s3
-		//same as create
-		const s3File = {
-			filename: fname,
-			content: fcontent,
-			style: fstyle
-		};
+  File.updateFile(uid, fid, updates, (err, file) => {
+    if(err) {
+      res.status(500).json({
+        error: err
+      });
+      return;
+    }
+    //update file in s3
+    //same as create
+    const s3File = {
+      filename: fname,
+      content: fcontent,
+      style: fstyle
+    };
 
-		s3.putObject(
-			{
-				Bucket: `${BUKET_NAME}/${uid}`,
-				Key: `${fid}.json`,
-				Body: JSON.stringify(s3File),
-				ContentType: 'application/json'
-			},
-			(err, data) => {
-				if (err) throw err;
-			}
-		);
+    if(res.headerSet) {
+      return;
+    }
 
-		res.status(200).json({
-			file: file
-		});
-	});
+    s3.putObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`,
+      Body: JSON.stringify(s3File),
+      ContentType: "application/json"
+    }, 
+    (err, data) => {
+      if(res.headerSet) {
+        return;
+      }
+      if(err) {
+        res.status(500).json({
+          error: err
+        });
+        return;
+      }
+    });
+
+    if(res.headerSet) {
+     return;
+    }
+    
+    res.status(202).json({
+      file: file
+    });
+  });
 };
 
 const deleteFile = (req, res) => {
-	const fid = req.body.fileId;
-	const uid = req.user._id;
+  const fid = req.body.fileId;
+  const uid = req.user._id;
 
-	File.deleteFileById(fid, (err, files) => {
-		if (err) throw err;
-		//delete file in s3
-		s3.deleteObject(
-			{
-				Bucket: `${BUKET_NAME}/${uid}`,
-				Key: `${fid}.json`
-			},
-			(err, data) => {
-				if (err) throw err;
-			}
-		);
+  File.deleteFileById(fid, (err, files) => {
+    if(err) {
+      res.status(500).json({
+        error: err
+      });
+      return;
+    }
+    //delete file in s3
+    s3.deleteObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`
+    },
+    (err, data) => {
+      if(res.headerSet) {
+        return;
+      }
+      if(err) {
+        res.status(500).json({
+          error: err
+        });
+        return;
+      }
+    });
 
-		res.status(200).json({
-			files: files
-		});
-	});
+    if(res.headerSet) {
+      return;
+    }
+
+    res.status(200).json({
+      files: files
+    });
+  });
 };
 
 const loadFile = (req, res) => {
-	const fid = req.body.fileId;
-	const uid = req.user._id;
+  const fid = req.body.fileId;
+  const uid = req.user._id;
 
-	File.getFileById(fid, (err, file) => {
-		//grab file from s3 and read into json object
-		s3.getObject(
-			{
-				Bucket: `${BUKET_NAME}/${uid}`,
-				Key: `${fid}.json`
-			},
-			(err, content) => {
-				if (err) throw err;
-				const data = JSON.parse(content.Body.toString());
+  File.getFileById(fid, (err, file) => {
+    if(err) {
+      res.status(500).json({
+        error: err
+      });
+      return;
+    }
+    //grab file from s3 and read into json object
+    s3.getObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`,
+    },
+    (err, content) => {
+      if(res.headerSet) {
+       return;
+      }
+      if(err) {
+        res.status(500).json({
+          error: err
+        });
+        return;
+      }
+      const data = JSON.parse(content.Body.toString());
 
-				res.status(200).json({
-					filename: data.filename,
-					content: data.content,
-					style: data.style
-				});
-			}
-		);
-		//console.log(load);
-	});
+      if(res.headerSet) {
+       return;
+      }
+
+      res.status(200).json({
+        filename: data.filename,
+        content: data.content,
+        style: data.style
+      });
+    });
+    
+  });
 };
 
 module.exports = {
