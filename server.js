@@ -75,6 +75,10 @@ applyRoutes(app);
 // Rendered Routes
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
+app.get('/logout', (req, res) => {
+	req.logout();
+	res.redirect('/login');
+});
 
 // Static Files (favicon, etc.)
 app.use(express.static(path.join(__dirname, 'public')));

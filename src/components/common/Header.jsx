@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { faCloud } from '@fortawesome/fontawesome-free-solid';
 import { BrandButton } from 'pivotal-ui/react/buttons';
+import Icon from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/fontawesome-free-solid';
 
 const StyledNav = styled.nav`
 	display: flex;
@@ -47,7 +49,21 @@ const Row = styled.div`
 	padding: 0 20px;
 `;
 
-const Header = () => {
+const User = styled.span`
+	padding: 0 20px;
+`;
+
+const Text = styled.span`
+	padding: 0 5px;
+`;
+
+const Logout = styled.a`
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+`;
+
+const Header = ({ user }) => {
 	return (
 		<StyledNav>
 			<Row>
@@ -57,12 +73,11 @@ const Header = () => {
 				</Link>
 			</Row>
 			<Row>
-				<Link className="btn btn-brand-alt" to="/">
-					My Files
-				</Link>
-				<a className="btn btn-brand-alt-danger" href="/logout">
-					Log Out
-				</a>
+				<User>{user}</User>
+				<Logout className="btn btn-brand-alt-danger" href="/logout">
+					<Icon icon={faSignOutAlt} size="1x" />
+					<Text>Log Out</Text>
+				</Logout>
 			</Row>
 		</StyledNav>
 	);

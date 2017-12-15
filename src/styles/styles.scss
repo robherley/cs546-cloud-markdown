@@ -13,10 +13,10 @@ $red: #eb4511;
 
 body {
 	margin: 0;
-	overflow: hidden;
+	overflow: scroll;
 	font-family: $normal-font;
 	background-color: $dark-grey;
-	color: $white;
+	color: white;
 }
 
 a:hover,
@@ -47,8 +47,16 @@ ul {
 	margin: 0;
 }
 
+.dark-text {
+	color: #282a36 !important;
+}
+
 .tab-pane {
 	padding: 0;
+}
+
+.panel-container {
+	padding: 4em 3em;
 }
 
 .simple-row {

@@ -19,22 +19,9 @@ router.post(
 		}
 	}
 );
-router.post('/api/v1/user/logout', userAPI.isAuthUser, userAPI.logout);
-router.post('/api/v1/user/getfiles', userAPI.isAuthUser, userAPI.getUsersFiles);
 router.post('/api/v1/user/update', userAPI.isAuthUser, userAPI.updateUser);
+router.get('/api/v1/user/about', userAPI.isAuthUser, userAPI.aboutUser);
+router.get('/api/v1/user/logout', userAPI.isAuthUser, userAPI.logout);
+router.get('/api/v1/user/getfiles', userAPI.isAuthUser, userAPI.getUsersFiles);
 
 module.exports = router;
-
-passport.authenticate('local', { failWithError: true }),
-	(req, res, next) => {
-		// handle success
-		userAPI.login(req, res);
-	},
-	(err, req, res, next) => {
-		// handle error
-		if (err) {
-			res.status(409).json({
-				error: err
-			});
-		}
-	};

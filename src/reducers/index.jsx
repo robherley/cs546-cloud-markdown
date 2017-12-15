@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import editor from './editorReducer';
-import sample from './sampleReducer';
+import isFetching from './fetchingReducer';
 import width from './widthReducer';
+import user from './userReducer';
 
 const rootReducer = combineReducers({
-	sample,
+	isFetching,
 	editor,
-	width
+	width,
+	user
 });
 
 export default rootReducer;

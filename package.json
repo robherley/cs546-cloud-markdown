@@ -1,17 +1,19 @@
 {
 	"name": "cs546-cloud-markdown",
 	"version": "1.0.0",
-	"description": "Final Project for CS-546, a simple cloud based markdown editor.",
+	"description":
+		"Final Project for CS-546, a simple cloud based markdown editor.",
 	"engines": {
 		"npm": ">=5",
 		"node": "8.7.0"
 	},
 	"scripts": {
 		"start": "node server.js",
-		"dev": "concurrently -n '☁️ SERVER,💻 CLIENT' -c 'magenta,cyan' 'npm run nodemon' 'npm run wds'",
+		"dev":
+			"concurrently -n '☁️ SERVER,💻 CLIENT' -c 'magenta,cyan' 'npm run nodemon' 'npm run wds'",
 		"prod": "npm run build && NODE_ENV='production' node server.js",
 		"nodemon": "node_modules/.bin/nodemon",
-		"wds": "webpack-dev-server --open --config ./webpack.config.dev.js",
+		"wds": "webpack-dev-server --config ./webpack.config.dev.js",
 		"clean-dist": "npm run remove-dist && mkdir dist",
 		"remove-dist": "rimraf ./dist",
 		"build": "babel-node tools/build.js"
@@ -105,13 +107,7 @@
 		"type": "git",
 		"url": "git+https://github.com/robherley/cs546-cloud-markdown.git"
 	},
-	"keywords": [
-		"react",
-		"redux",
-		"express",
-		"mongo",
-		"markdown"
-	],
+	"keywords": ["react", "redux", "express", "mongo", "markdown"],
 	"contributors": [
 		"Rob Herley <rherley@stevens.edu> (https://robherley.me)",
 		"Jonathan Pavlik <jpavlik1@stevens.edu> (https://github.com/gluaxspeed/)",

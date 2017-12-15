@@ -14,8 +14,6 @@ import { HashRouter } from 'react-router-dom';
 import App from './components/App';
 import HomePage from './components/home/HomePage';
 import Editor from './components/editor/Editor';
-import ReduxPage from './components/redux/ReduxPage';
-import AboutPage from './components/about/AboutPage';
 
 // Styling
 import 'pivotal-ui/components.css';
@@ -23,8 +21,7 @@ import './styles/styles.scss';
 
 const store = configureStore();
 
-const NotFound = () => <div>How did you get here?</div>;
-const Login = () => <div>Login Here!!</div>;
+const NotFound = () => <div>404: How did you get here?</div>;
 
 ReactDOM.render(
 	<Provider store={store}>
@@ -40,17 +37,6 @@ ReactDOM.render(
 					path="/editor"
 					render={() => <App children={<Editor />} />}
 				/>
-				<Route
-					exact
-					path="/redux"
-					render={() => <App children={<ReduxPage />} />}
-				/>
-				<Route
-					exact
-					path="/about"
-					render={() => <App children={<AboutPage />} />}
-				/>
-				<Route path="/login" component={Login} />
 				<Route path="*" component={NotFound} />
 			</Switch>
 		</HashRouter>

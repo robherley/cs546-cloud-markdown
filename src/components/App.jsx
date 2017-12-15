@@ -3,8 +3,13 @@ import Header from './common/Header';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { changeWidth } from '../actions/widthActions';
+import { loadUserInfo } from '../actions/userActions';
 
 class App extends React.Component {
+	componentWillMount() {
+		this.props.loadUserInfo();
+	}
+
 	componentDidMount() {
 		this.props.changeWidth(window.innerWidth);
 		window.addEventListener('resize', () =>
@@ -14,12 +19,21 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<Header />
-				{this.props.children}
-			</div>
+			this.props.user.about && (
+				<div className="content">
+					<Header user={this.props.user.about.username} />
+					{this.props.children}
+				</div>
+			)
 		);
 	}
 }
 
-export default withRouter(connect(null, { changeWidth })(App));
+export default withRouter(
+	connect(
+		state => ({
+			user: state.user
+		}),
+		{ loadUserInfo, changeWidth }
+	)(App)
+);
