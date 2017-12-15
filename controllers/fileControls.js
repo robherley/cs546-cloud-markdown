@@ -1,6 +1,10 @@
 const { File } = require('../models/file');
 const User = require('../models/user');
 const uuidv4 = require('uuid/v4');
+const AWS = require('aws-sdk');
+AWS.config.region = 'us-east-2';
+const s3 = new AWS.S3();
+//include s3 credentials here
 
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
@@ -34,6 +38,23 @@ const createFile = (req, res) => {
     //filcontent as json with keys
     //filename, content, style
     //mapped to respective things
+    const s3File = {
+      filename: fname,
+      content: fcontent,
+      style: fstyle
+    };
+
+    s3.putObject({
+      Bucket: ``,
+      Key: `${newFile._id}.json`,
+      Body: JSON.stringify(s3File),
+      contentType: "application/json"
+    }, 
+    (err, data) => {
+      res.status(200).json({
+        error: err
+      });
+    });
 
     res.status(200).json({
       user: user
