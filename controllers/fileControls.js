@@ -1,159 +1,162 @@
 const { File } = require('../models/file');
 const User = require('../models/user');
 const uuidv4 = require('uuid/v4');
+require('dotenv').config();
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
-const IAM_USER_KEY = 'AKIAJTZOJ5MRJWXN5D7Q';
-const IAM_USER_SECRET = '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';
-const BUKET_NAME = 'stratus-testing-grounds';
-const s3 = new AWS.S3({
-  accessKeyId: IAM_USER_KEY,
-  secretAccessKey: IAM_USER_SECRET
-});
-//include s3 credentials here
+AWS.config.accessKeyId = process.env.AWS_USER_KEY;
+AWS.config.secretAccessKey = process.env.AWS_USER_SECRET;
+const BUKET_NAME = 'stratus-prod';
+const s3 = new AWS.S3();
 
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
 	const fcontent = req.body.content;
-  const fstyle = req.body.style;
+	const fstyle = req.body.style;
 
-  const id = req.user.id;
-  let userFiles = req.user.files;
+	const id = req.user.id;
+	let userFiles = req.user.files;
 
 	const newFile = new File({
 		filename: fname,
-    madeby: id
+		madeby: id
 	});
 
 	File.newFile(newFile, (err, file) => {
-		if(err) {
-      res.status(424).json({
-        error: err
-      });
-      return;
-    }
+		if (err) {
+			res.status(424).json({
+				error: err
+			});
+			return;
+		}
 	});
 
-  userFiles.push(newFile);
+	userFiles.push(newFile);
 
-  User.updateUser(id, { files: userFiles }, (err, user) => {
-    if(err) throw err;
+	User.updateUser(id, { files: userFiles }, (err, user) => {
+		if (err) throw err;
 
-    //put file in s3
-    //file name as newFile._id
-    //filcontent as json with keys
-    //filename, content, style
-    //mapped to respective things
-    const s3File = {
-      filename: fname,
-      content: fcontent,
-      style: fstyle
-    };
+		//put file in s3
+		//file name as newFile._id
+		//filcontent as json with keys
+		//filename, content, style
+		//mapped to respective things
+		const s3File = {
+			filename: fname,
+			content: fcontent,
+			style: fstyle
+		};
 
-    s3.putObject({
-      Bucket: `${BUKET_NAME}/${id}`,
-      Key: `${newFile._id}.json`,
-      Body: JSON.stringify(s3File),
-      ContentType: "application/json"
-    }, 
-    (err, data) => {
-      if(err) throw err;
-    });
+		s3.putObject(
+			{
+				Bucket: `${BUKET_NAME}/${id}`,
+				Key: `${newFile._id}.json`,
+				Body: JSON.stringify(s3File),
+				ContentType: 'application/json'
+			},
+			(err, data) => {
+				if (err) throw err;
+			}
+		);
 
-    res.status(200).json({
-      user: user
-    });
-  })
-  
+		res.status(200).json({
+			user: user
+		});
+	});
 };
 
 const updateFile = (req, res) => {
-  const fname = req.body.fileName;
-  const fcontent = req.body.content;
-  const fstyle = req.body.style;
-  const fid = req.body.fileId;
+	const fname = req.body.fileName;
+	const fcontent = req.body.content;
+	const fstyle = req.body.style;
+	const fid = req.body.fileId;
 
-  const uid = req.user.id;
-  let updates = {
-    filename: fname,
-    lastModified: new Date(Date.now()).toISOString()
-  };
+	const uid = req.user.id;
+	let updates = {
+		filename: fname,
+		lastModified: new Date(Date.now()).toISOString()
+	};
 
-  File.updateFile(uid, fid, updates, (err, file) => {
-    if(err) throw err;
-    //update file in s3
-    //same as create
-    const s3File = {
-      filename: fname,
-      content: fcontent,
-      style: fstyle
-    };
+	File.updateFile(uid, fid, updates, (err, file) => {
+		if (err) throw err;
+		//update file in s3
+		//same as create
+		const s3File = {
+			filename: fname,
+			content: fcontent,
+			style: fstyle
+		};
 
-    s3.putObject({
-      Bucket: `${BUKET_NAME}/${uid}`,
-      Key: `${fid}.json`,
-      Body: JSON.stringify(s3File),
-      ContentType: "application/json"
-    }, 
-    (err, data) => {
-      if(err) throw err;
-    });
-    
-    res.status(200).json({
-      file: file
-    });
-  });
+		s3.putObject(
+			{
+				Bucket: `${BUKET_NAME}/${uid}`,
+				Key: `${fid}.json`,
+				Body: JSON.stringify(s3File),
+				ContentType: 'application/json'
+			},
+			(err, data) => {
+				if (err) throw err;
+			}
+		);
+
+		res.status(200).json({
+			file: file
+		});
+	});
 };
 
 const deleteFile = (req, res) => {
-  const fid = req.body.fileId;
-  const uid = req.user._id;
+	const fid = req.body.fileId;
+	const uid = req.user._id;
 
-  File.deleteFileById(fid, (err, files) => {
-    if(err) throw err;
-    //delete file in s3
-    s3.deleteObject({
-      Bucket: `${BUKET_NAME}/${uid}`,
-      Key: `${fid}.json`
-    },
-    (err, data) => {
-      if(err) throw err;
-    });
+	File.deleteFileById(fid, (err, files) => {
+		if (err) throw err;
+		//delete file in s3
+		s3.deleteObject(
+			{
+				Bucket: `${BUKET_NAME}/${uid}`,
+				Key: `${fid}.json`
+			},
+			(err, data) => {
+				if (err) throw err;
+			}
+		);
 
-    res.status(200).json({
-      files: files
-    });
-  });
+		res.status(200).json({
+			files: files
+		});
+	});
 };
 
 const loadFile = (req, res) => {
-  const fid = req.body.fileId;
-  const uid = req.user._id;
+	const fid = req.body.fileId;
+	const uid = req.user._id;
 
-  File.getFileById(fid, (err, file) => {
-    //grab file from s3 and read into json object
-    s3.getObject({
-      Bucket: `${BUKET_NAME}/${uid}`,
-      Key: `${fid}.json`,
-    },
-    (err, content) => {
-      if(err) throw err;
-      const data = JSON.parse(content.Body.toString());
+	File.getFileById(fid, (err, file) => {
+		//grab file from s3 and read into json object
+		s3.getObject(
+			{
+				Bucket: `${BUKET_NAME}/${uid}`,
+				Key: `${fid}.json`
+			},
+			(err, content) => {
+				if (err) throw err;
+				const data = JSON.parse(content.Body.toString());
 
-      res.status(200).json({
-        filname: data.filename,
-        content: data.content,
-        style: data.style
-      });
-    });
-    //console.log(load);
-  });
-  
+				res.status(200).json({
+					filename: data.filename,
+					content: data.content,
+					style: data.style
+				});
+			}
+		);
+		//console.log(load);
+	});
 };
 
 module.exports = {
-  createFile,
-  updateFile,
-  deleteFile,
-  loadFile
+	createFile,
+	updateFile,
+	deleteFile,
+	loadFile
 };
