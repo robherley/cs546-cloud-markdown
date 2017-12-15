@@ -15,6 +15,7 @@ import {
 import { Tooltip, TooltipTrigger } from 'pivotal-ui/react/tooltip';
 import { Flyout } from 'pivotal-ui/react/flyout';
 import { BrandButton } from 'pivotal-ui/react/buttons';
+import Preferences from './Preferences';
 
 // Link to understand Monaco themes:
 // https://microsoft.github.io/monaco-editor/playground.html#customizing-the-appearence-exposed-colors
@@ -46,6 +47,7 @@ const Wrapper = styled.div`
 
 const FileName = styled.div`
 	font-family: 'Fira Mono', monospace;
+	padding-left: 1em;
 `;
 
 class Monaco extends Component {
@@ -72,20 +74,20 @@ class Monaco extends Component {
 			automaticLayout: true,
 			fontSize: '14px',
 			fontFamily: 'Fira Mono',
-			colorTheme: 'start-light',
+			colorTheme: 'strat-dark',
 			minimap: {
 				enabled: false
 			}
 		};
-		const { width, file, content } = this.props;
+		const { width, file, content, css } = this.props;
 		const { open } = this.state;
 		const children = <h1>Test!</h1>;
 		return (
 			<Wrapper width={width}>
 				<Bar>
-					<div className="simple-row" style={{ width: '100px' }}>
+					<div className="simple-row">
 						<Icon icon={faCode} size="1x" />
-						<FileName>{file}</FileName>
+						<FileName>{file}.md</FileName>
 					</div>
 					<div className="simple-row" style={{ width: '170px' }}>
 						<TooltipTrigger
@@ -147,7 +149,7 @@ class Monaco extends Component {
 					{...{
 						open,
 						header: 'Preferences',
-						children,
+						children: <Preferences />,
 						close: () => this.setState({ open: false })
 					}}
 				/>
@@ -158,7 +160,9 @@ class Monaco extends Component {
 
 export default connect(
 	state => ({
-		content: state.editor.content
+		content: state.editor.content,
+		css: state.editor.css,
+		file: state.editor.file
 	}),
 	{ updateContent }
 )(Monaco);

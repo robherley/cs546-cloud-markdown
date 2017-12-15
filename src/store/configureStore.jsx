@@ -6,7 +6,7 @@ import logger from 'redux-logger';
 
 const middleware =
 	process.env.NODE_ENV === 'production'
-		? applyMiddleware(thunk, reduxImmutableStateInvariant())
+		? applyMiddleware(thunk)
 		: applyMiddleware(thunk, reduxImmutableStateInvariant(), logger);
 
 export default function configureStore(initialState) {

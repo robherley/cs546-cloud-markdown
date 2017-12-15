@@ -53,9 +53,8 @@ class Editor extends React.Component {
 			return (
 				<Tabs defaultActiveKey={1} className="custom-tabs">
 					<Tab eventKey={1} title="Markdown">
-						<ContentContainer>
+						<ContentContainer style={{ height: '92vh' }}>
 							<Monaco
-								file="test.md"
 								width={width}
 								onExport={() =>
 									this.refs.eyeFrame.contentWindow.print()
@@ -83,7 +82,6 @@ class Editor extends React.Component {
 			return (
 				<ContentContainer>
 					<Monaco
-						file="test.md"
 						width={width / 2}
 						onExport={() =>
 							this.refs.eyeFrame.contentWindow.print()
