@@ -48,7 +48,6 @@ class HomePage extends React.Component {
 				<div className="panel-container">
 					<Panel
 						className="bg-neutral-11 box-shadow-1 border-rounded dark-text"
-						scrollable={window.innerWidth / 2}
 						header={
 							<span>
 								Hello, {user.about.name}.{' '}
