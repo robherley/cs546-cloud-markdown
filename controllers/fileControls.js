@@ -3,7 +3,13 @@ const User = require('../models/user');
 const uuidv4 = require('uuid/v4');
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
-const s3 = new AWS.S3();
+const IAM_USER_KEY = 'AKIAJTZOJ5MRJWXN5D7Q';
+const IAM_USER_SECRET = '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';
+const BUKET_NAME = 'stratus-testing-grounds';
+const s3 = new AWS.S3({
+  accessKeyId: IAM_USER_KEY,
+  secretAccessKey: IAM_USER_SECRET
+});
 //include s3 credentials here
 
 const createFile = (req, res) => {
@@ -45,15 +51,13 @@ const createFile = (req, res) => {
     };
 
     s3.putObject({
-      Bucket: ``,
+      Bucket: `${BUKET_NAME}/${id}`,
       Key: `${newFile._id}.json`,
       Body: JSON.stringify(s3File),
-      contentType: "application/json"
+      ContentType: "application/json"
     }, 
     (err, data) => {
-      res.status(200).json({
-        error: err
-      });
+      if(err) throw err;
     });
 
     res.status(200).json({
@@ -79,6 +83,21 @@ const updateFile = (req, res) => {
     if(err) throw err;
     //update file in s3
     //same as create
+    const s3File = {
+      filename: fname,
+      content: fcontent,
+      style: fstyle
+    };
+
+    s3.putObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`,
+      Body: JSON.stringify(s3File),
+      ContentType: "application/json"
+    }, 
+    (err, data) => {
+      if(err) throw err;
+    });
     
     res.status(200).json({
       file: file
@@ -88,11 +107,19 @@ const updateFile = (req, res) => {
 
 const deleteFile = (req, res) => {
   const fid = req.body.fileId;
+  const uid = req.user._id;
 
   File.deleteFileById(fid, (err, files) => {
     if(err) throw err;
     //delete file in s3
-    
+    s3.deleteObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`
+    },
+    (err, data) => {
+      if(err) throw err;
+    });
+
     res.status(200).json({
       files: files
     });
@@ -101,14 +128,25 @@ const deleteFile = (req, res) => {
 
 const loadFile = (req, res) => {
   const fid = req.body.fileId;
+  const uid = req.user._id;
 
   File.getFileById(fid, (err, file) => {
     //grab file from s3 and read into json object
-    res.status(200).json({
-      filname: 's3file.filename',
-      content: 's3file.content',
-      style: 's3file.style'
+    s3.getObject({
+      Bucket: `${BUKET_NAME}/${uid}`,
+      Key: `${fid}.json`,
+    },
+    (err, content) => {
+      if(err) throw err;
+      const data = JSON.parse(content.Body.toString());
+
+      res.status(200).json({
+        filname: data.filename,
+        content: data.content,
+        style: data.style
+      });
     });
+    //console.log(load);
   });
   
 };
