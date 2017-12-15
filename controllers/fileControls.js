@@ -4,8 +4,6 @@ const uuidv4 = require('uuid/v4');
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
 const s3 = new AWS.S3();
-var credentials = new AWS.SharedIniFileCredentials();
-AWS.config.credentials = credentials;
 
 const createFile = (req, res) => {
 	const fname = req.body.fileName;
