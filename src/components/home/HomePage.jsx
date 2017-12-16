@@ -1,11 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadUserFiles } from '../../actions/userActions';
-import { withFlex, withRowClassName, Table } from 'pivotal-ui/react/table';
+import {
+	withFlex,
+	withRowClassName,
+	withScrollableTbody,
+	withFooterRow,
+	Table
+} from 'pivotal-ui/react/table';
 import { Panel } from 'pivotal-ui/react/panels';
 import Icon from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/fontawesome-free-solid';
+import { faPlus, faArrowLeft } from '@fortawesome/fontawesome-free-solid';
 import styled from 'styled-components';
+import NewFile from './NewFile';
+import { Flyout } from 'pivotal-ui/react/flyout';
 
 const StyledButton = styled.button`
 	display: flex;
@@ -17,14 +25,27 @@ const Pad = styled.span`
 	padding-left: 4px;
 `;
 
+const ButtonContainer = styled.div`
+	display: flex;
+	align-items: center;
+	padding-bottom: 1em;
+`;
+
 class HomePage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {};
+	}
+
 	componentWillMount() {
 		this.props.loadUserFiles();
 	}
 
 	render() {
 		const { user } = this.props;
-		const ComposedTable = withFlex(withRowClassName(Table));
+		const ComposedTable = withFooterRow(
+			withScrollableTbody(withFlex(withRowClassName(Table)))
+		);
 		const columns = [
 			{
 				attribute: 'filename',
@@ -43,48 +64,68 @@ class HomePage extends React.Component {
 		if (user.fileList) {
 			hasFiles = user.fileList.length !== 0;
 		}
+		let { open } = this.state;
 		return (
 			user.fileList && (
-				<div className="panel-container">
-					<Panel
-						className="bg-neutral-11 box-shadow-1 border-rounded dark-text"
-						header={
+				<div className="content-container">
+					<ButtonContainer>
+						<StyledButton
+							className="btn btn-default btn-superblue mrl"
+							onClick={() => this.setState({ open: true })}
+						>
+							<Icon icon={faPlus} size="1x" />
+							<Pad>New File</Pad>
+						</StyledButton>
+						{!hasFiles && (
 							<span>
-								Hello, {user.about.name}.{' '}
-								{hasFiles
-									? 'Here are your files:'
-									: 'You have no files!'}
+								<Icon icon={faArrowLeft} size="1x" />
+								<Pad>You have no files! Make a new one!</Pad>
 							</span>
-						}
-						actions={
-							<div>
-								<StyledButton className="btn btn-default mrl">
-									<Icon icon={faPlus} size="1x" />
-									<Pad>New File</Pad>
-								</StyledButton>
-							</div>
-						}
-					>
-						{hasFiles ? (
-							<ComposedTable
-								columns={columns}
-								data={user.fileList.map(file => {
-									return {
-										...file,
-										dateCreated: new Date(
-											file.dateCreated
-										).toLocaleString(),
-										lastModified: new Date(
-											file.lastModified
-										).toLocaleString()
-									};
-								})}
-								rowClassName={({ isHeader }) =>
-									!isHeader && 'tr-hover'
-								}
-							/>
-						) : null}
-					</Panel>
+						)}
+					</ButtonContainer>
+					{hasFiles && (
+						<ComposedTable
+							scrollable
+							tbodyHeight="70vh"
+							columns={columns}
+							className="main-table"
+							data={user.fileList.map(file => {
+								return {
+									...file,
+									dateCreated: new Date(
+										file.dateCreated
+									).toLocaleString(),
+									lastModified: new Date(
+										file.lastModified
+									).toLocaleString()
+								};
+							})}
+							footerRow={
+								<div
+									className="tr-hover tr grid"
+									style={{
+										borderBottom:
+											'1px solid rgb(223, 229, 232)'
+									}}
+								>
+									<div className="td col">
+										{user.fileList.length} Files
+									</div>
+								</div>
+							}
+							rowClassName={({ isHeader }) =>
+								!isHeader && 'tr-hover'
+							}
+						/>
+					)}
+					<Flyout
+						{...{
+							open,
+							header: 'New File',
+							children: <NewFile />,
+							close: () => this.setState({ open: false })
+						}}
+					/>
 				</div>
 			)
 		);

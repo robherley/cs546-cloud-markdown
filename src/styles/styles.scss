@@ -13,7 +13,6 @@ $red: #eb4511;
 
 body {
 	margin: 0;
-	overflow: scroll;
 	font-family: $normal-font;
 	background-color: $dark-grey;
 	color: white;
@@ -55,14 +54,48 @@ ul {
 	padding: 0;
 }
 
-.panel-container {
+.content-container {
 	padding: 5vh 5em;
+	min-height: 75vh;
+}
+
+.main-table {
+	color: $dark-grey;
+	background-color: white !important;
+}
+
+.main-table > .thead {
+	color: white;
+	background-color: rgb(96, 117, 128) !important;
+	text-transform: uppercase;
+	font-family: $standout-font;
+	font-weight: bold;
+}
+
+.main-table > .thead > .tr {
+	border-color: rgb(96, 117, 128);
+}
+
+.main-table > .tfoot {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: $standout-font;
+	background-color: #e9e8e8 !important;
 }
 
 .simple-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
+}
+
+.btn-superblue {
+	background-color: $blue !important;
+	border-color: $blue !important;
+	&:hover {
+		background-color: #077bce !important;
+		border-color: #077bce !important;
+	}
 }
 
 .btn-brand-alt {
