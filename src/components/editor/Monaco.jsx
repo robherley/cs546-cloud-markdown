@@ -12,7 +12,8 @@ import {
 	faCopy,
 	faCog,
 	faSave,
-	faTrashAlt
+	faTrashAlt,
+	faChevronCircleLeft
 } from '@fortawesome/fontawesome-free-solid';
 import { Tooltip, TooltipTrigger } from 'pivotal-ui/react/tooltip';
 import { Flyout } from 'pivotal-ui/react/flyout';
@@ -28,7 +29,7 @@ import { withRouter } from 'react-router-dom';
 toastr.options = {
 	positionClass: 'toast-top-center',
 	progressBar: true,
-	timeOut: 2500
+	timeOut: 700
 };
 
 const Bar = styled.div`
@@ -61,6 +62,13 @@ const FileName = styled.div`
 	padding-left: 1em;
 `;
 
+const StyledIcon = styled(Icon)`
+	color: #0496ff;
+	&:hover {
+		color: #077bce;
+	}
+`;
+
 class Monaco extends Component {
 	constructor(props) {
 		super(props);
@@ -73,6 +81,11 @@ class Monaco extends Component {
 
 	editorDidMount(editor, monaco) {
 		editor.focus();
+	}
+
+	async saveAndExit() {
+		await this.saveFile();
+		this.props.history.push('/');
 	}
 
 	onChange(newValue, e) {
@@ -130,7 +143,17 @@ class Monaco extends Component {
 			<Wrapper width={width}>
 				<Bar>
 					<div className="simple-row">
-						<Icon icon={faCode} size="1x" />
+						<TooltipTrigger
+							tooltip="Back"
+							trigger="hover"
+							theme="light"
+						>
+							<StyledIcon
+								icon={faChevronCircleLeft}
+								size="lg"
+								onClick={() => this.saveAndExit()}
+							/>
+						</TooltipTrigger>
 						<FileName>{file}.md</FileName>
 					</div>
 					<div className="simple-row" style={{ width: '220px' }}>

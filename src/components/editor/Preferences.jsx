@@ -40,19 +40,23 @@ class Preferences extends Component {
 	}
 
 	updateInfo() {
-		for (let file of this.props.fileList) {
-			if (
-				file.filename === this.state.value &&
-				this.props.file !== this.state.value
-			) {
-				toastr.error(
-					`A file with the name '${file.filename}' already exists!`
-				);
-				return;
+		if (this.state.value.length !== 0) {
+			for (let file of this.props.fileList) {
+				if (
+					file.filename === this.state.value &&
+					this.props.file !== this.state.value
+				) {
+					toastr.error(
+						`A file with the name '${
+							file.filename
+						}' already exists!`
+					);
+					return;
+				}
 			}
+			this.props.updateFileName(this.state.value);
 		}
 		this.props.updateCSS(this.refs.css.editor.getModel().getValue());
-		this.props.updateFileName(this.state.value);
 	}
 
 	render() {
@@ -69,11 +73,11 @@ class Preferences extends Component {
 			<div>
 				<Form>
 					<FormRow>
-						<FormCol name="filename" label="File Name">
+						<FormCol name="filename" label="Rename File">
 							<Input
 								icon="copy"
-								placeholder="Enter a File Name"
-								value={this.props.file}
+								placeholder="Enter a New File Name"
+								value={this.state.file}
 								onChange={e =>
 									this.setState({
 										value: e.target.value.replace(/\s/g, '')

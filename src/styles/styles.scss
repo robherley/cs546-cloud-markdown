@@ -3,8 +3,10 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @import url('https://use.fontawesome.com/releases/v5.0.1/css/all.css?ver=4.9.1');
 @import 'toastr';
+
 $standout-font: 'Barlow Semi Condensed', sans-serif;
 $normal-font: 'Open Sans', sans-serif;
+$code-font: 'Fira Mono', monospace;
 
 $header: rgb(55, 61, 73);
 $dark-grey: #282a36;
@@ -152,4 +154,11 @@ ul {
 .flyout {
 	background-color: rgba(34, 36, 46, 0.8) !important;
 	color: $dark-grey !important;
+}
+
+.filename {
+	font-family: $code-font;
+	font-weight: bold;
+	padding: 0.5em;
+	border-radius: 4px;
 }

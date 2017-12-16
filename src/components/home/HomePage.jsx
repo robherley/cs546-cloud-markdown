@@ -105,6 +105,11 @@ class HomePage extends React.Component {
 							data={user.fileList.map(file => {
 								return {
 									...file,
+									filename: (
+										<span className="filename">
+											{file.filename}.md
+										</span>
+									),
 									dateCreated: new Date(
 										file.dateCreated
 									).toLocaleString(),
