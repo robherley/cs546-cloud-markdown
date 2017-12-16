@@ -13,6 +13,7 @@ import {
 import { Panel } from 'pivotal-ui/react/panels';
 import Icon from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowLeft } from '@fortawesome/fontawesome-free-solid';
+import { Input } from 'pivotal-ui/react/inputs';
 import styled from 'styled-components';
 import NewFile from './NewFile';
 import { Flyout } from 'pivotal-ui/react/flyout';
@@ -37,7 +38,9 @@ const ButtonContainer = styled.div`
 class HomePage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			search: ''
+		};
 	}
 
 	async componentWillMount() {
@@ -47,6 +50,25 @@ class HomePage extends React.Component {
 	async editFile(obj) {
 		await this.props.setFile(obj._id);
 		await this.props.history.push('/editor');
+	}
+
+	filterAndMap() {
+		return this.props.user.fileList
+			.filter(file => file.filename.indexOf(this.state.search) !== -1)
+			.map(file => {
+				return {
+					...file,
+					filename: (
+						<span className="filename">{file.filename}.md</span>
+					),
+					dateCreated: new Date(file.dateCreated).toLocaleString(),
+					lastModified: new Date(file.lastModified).toLocaleString()
+				};
+			});
+	}
+
+	handleSearch(search) {
+		this.setState({ search: search });
 	}
 
 	render() {
@@ -95,6 +117,11 @@ class HomePage extends React.Component {
 								<Pad>You have no files! Make a new one!</Pad>
 							</span>
 						)}
+						<Input
+							icon="search"
+							placeholder="Search"
+							onChange={e => this.handleSearch(e.target.value)}
+						/>
 					</ButtonContainer>
 					{hasFiles && (
 						<ComposedTable
@@ -102,22 +129,7 @@ class HomePage extends React.Component {
 							tbodyHeight="70vh"
 							columns={columns}
 							className="main-table"
-							data={user.fileList.map(file => {
-								return {
-									...file,
-									filename: (
-										<span className="filename">
-											{file.filename}.md
-										</span>
-									),
-									dateCreated: new Date(
-										file.dateCreated
-									).toLocaleString(),
-									lastModified: new Date(
-										file.lastModified
-									).toLocaleString()
-								};
-							})}
+							data={this.filterAndMap()}
 							footerRow={
 								<div
 									className="tr-hover tr grid"
