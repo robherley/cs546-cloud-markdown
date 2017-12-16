@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadUserFiles } from '../../actions/userActions';
+import { setFile } from '../../actions/fileActions';
 import {
 	withFlex,
 	withRowClassName,
 	withScrollableTbody,
 	withFooterRow,
+	withCellOnClick,
 	Table
 } from 'pivotal-ui/react/table';
 import { Panel } from 'pivotal-ui/react/panels';
@@ -14,6 +16,7 @@ import { faPlus, faArrowLeft } from '@fortawesome/fontawesome-free-solid';
 import styled from 'styled-components';
 import NewFile from './NewFile';
 import { Flyout } from 'pivotal-ui/react/flyout';
+import { withRouter } from 'react-router-dom';
 
 const StyledButton = styled.button`
 	display: flex;
@@ -37,27 +40,37 @@ class HomePage extends React.Component {
 		this.state = {};
 	}
 
-	componentWillMount() {
-		this.props.loadUserFiles();
+	async componentWillMount() {
+		await this.props.loadUserFiles();
+	}
+
+	async editFile(obj) {
+		await this.props.setFile(obj._id);
+		await this.props.history.push('/editor');
 	}
 
 	render() {
 		const { user } = this.props;
 		const ComposedTable = withFooterRow(
-			withScrollableTbody(withFlex(withRowClassName(Table)))
+			withCellOnClick(
+				withScrollableTbody(withFlex(withRowClassName(Table)))
+			)
 		);
 		const columns = [
 			{
 				attribute: 'filename',
-				displayName: 'File Name'
+				displayName: 'File Name',
+				onClick: (e, obj) => this.editFile(obj)
 			},
 			{
 				attribute: 'dateCreated',
-				displayName: 'Created On'
+				displayName: 'Created On',
+				onClick: (e, obj) => this.editFile(obj)
 			},
 			{
 				attribute: 'lastModified',
-				displayName: 'Last Modified'
+				displayName: 'Last Modified',
+				onClick: (e, obj) => this.editFile(obj)
 			}
 		];
 		let hasFiles;
@@ -132,9 +145,11 @@ class HomePage extends React.Component {
 	}
 }
 
-export default connect(
-	state => ({
-		user: state.user
-	}),
-	{ loadUserFiles }
-)(HomePage);
+export default withRouter(
+	connect(
+		state => ({
+			user: state.user
+		}),
+		{ loadUserFiles, setFile }
+	)(HomePage)
+);

@@ -7,8 +7,16 @@ import { Form, FormRow, FormCol } from 'pivotal-ui/react/forms';
 import { DefaultButton } from 'pivotal-ui/react/buttons';
 import { Input } from 'pivotal-ui/react/inputs';
 import { connect } from 'react-redux';
-import { updateCSS, updateFileName } from '../../actions/editorActions';
+import { createFile } from '../../actions/fileActions';
 import { Checkbox } from 'pivotal-ui/react/checkbox';
+import { withRouter } from 'react-router-dom';
+import toastr from 'toastr';
+
+toastr.options = {
+	positionClass: 'toast-top-center',
+	progressBar: true,
+	timeOut: 2500
+};
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -28,22 +36,26 @@ class NewFile extends Component {
 		this.state = { value: '' };
 	}
 
-	addNewFile() {
+	async addNewFile() {
 		this.setState({ error: null });
 		if (this.state.value) {
 			for (let file of this.props.fileList) {
 				if (file.filename === this.state.value) {
-					this.setState({
-						error: `A file with the name '${
+					toastr.error(
+						`A file with the name '${
 							file.filename
 						}' already exists!`
-					});
+					);
 					return;
 				}
 			}
-			// Trigger
+			await this.props.createFile({
+				name: this.state.value,
+				default: defaultcss.checked
+			});
+			await this.props.history.push('/editor');
 		} else {
-			this.setState({ error: 'Invalid File Name' });
+			toastr.error('Invalid File Name!');
 			return;
 		}
 	}
@@ -95,10 +107,12 @@ class NewFile extends Component {
 	}
 }
 
-export default connect(
-	state => ({
-		file: state.editor.file,
-		fileList: state.user.fileList
-	}),
-	{ updateCSS, updateFileName }
-)(NewFile);
+export default withRouter(
+	connect(
+		state => ({
+			file: state.editor.file,
+			fileList: state.user.fileList
+		}),
+		{ createFile }
+	)(NewFile)
+);

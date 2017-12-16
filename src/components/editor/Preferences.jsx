@@ -8,6 +8,13 @@ import { DefaultButton } from 'pivotal-ui/react/buttons';
 import { Input } from 'pivotal-ui/react/inputs';
 import { connect } from 'react-redux';
 import { updateCSS, updateFileName } from '../../actions/editorActions';
+import toastr from 'toastr';
+
+toastr.options = {
+	positionClass: 'toast-top-center',
+	progressBar: true,
+	timeOut: 2500
+};
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -28,11 +35,22 @@ class Preferences extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			value: this.props.file
+			value: ''
 		};
 	}
 
 	updateInfo() {
+		for (let file of this.props.fileList) {
+			if (
+				file.filename === this.state.value &&
+				this.props.file !== this.state.value
+			) {
+				toastr.error(
+					`A file with the name '${file.filename}' already exists!`
+				);
+				return;
+			}
+		}
 		this.props.updateCSS(this.refs.css.editor.getModel().getValue());
 		this.props.updateFileName(this.state.value);
 	}
@@ -55,7 +73,7 @@ class Preferences extends Component {
 							<Input
 								icon="copy"
 								placeholder="Enter a File Name"
-								value={this.state.value}
+								value={this.props.file}
 								onChange={e =>
 									this.setState({
 										value: e.target.value.replace(/\s/g, '')
@@ -94,7 +112,8 @@ class Preferences extends Component {
 export default connect(
 	state => ({
 		css: state.editor.css,
-		file: state.editor.file
+		file: state.editor.file,
+		fileList: state.user.fileList
 	}),
 	{ updateCSS, updateFileName }
 )(Preferences);

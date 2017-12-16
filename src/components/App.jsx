@@ -22,9 +22,7 @@ class App extends React.Component {
 			this.props.user.about && (
 				<div className="content">
 					<Header user={this.props.user.about.username} />
-					<div style={{ overflow: 'scroll' }}>
-						{this.props.children}
-					</div>
+					<div>{this.props.children}</div>
 				</div>
 			)
 		);

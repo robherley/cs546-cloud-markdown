@@ -5,20 +5,31 @@ import { dark } from '../../config/editor_themes';
 import { DangerButton } from 'pivotal-ui/react/buttons';
 import { connect } from 'react-redux';
 import { updateContent } from '../../actions/editorActions';
+import { setFile } from '../../actions/fileActions';
 import Icon from '@fortawesome/react-fontawesome';
 import {
 	faCode,
 	faCopy,
 	faCog,
-	faUpload
+	faSave,
+	faTrashAlt
 } from '@fortawesome/fontawesome-free-solid';
 import { Tooltip, TooltipTrigger } from 'pivotal-ui/react/tooltip';
 import { Flyout } from 'pivotal-ui/react/flyout';
 import { BrandButton } from 'pivotal-ui/react/buttons';
 import Preferences from './Preferences';
+import axios from 'axios';
+import toastr from 'toastr';
+import { withRouter } from 'react-router-dom';
 
 // Link to understand Monaco themes:
 // https://microsoft.github.io/monaco-editor/playground.html#customizing-the-appearence-exposed-colors
+
+toastr.options = {
+	positionClass: 'toast-top-center',
+	progressBar: true,
+	timeOut: 2500
+};
 
 const Bar = styled.div`
 	display: flex;
@@ -68,6 +79,40 @@ class Monaco extends Component {
 		this.props.updateContent(newValue);
 	}
 
+	async saveFile() {
+		await axios
+			.post('/api/v1/file/update', {
+				fileName: this.props.file,
+				content: this.props.content,
+				style: this.props.css,
+				fileId: this.props.id
+			})
+			.then(res => {
+				toastr.success('File Saved!');
+			})
+			.catch(error => {
+				toastr.danger('Error Saving File!');
+			});
+	}
+
+	async deleteFile() {
+		const result = await confirm('Are you sure you want to delete?');
+		if (result) {
+			await axios
+				.post('/api/v1/file/delete', {
+					fileId: this.props.id
+				})
+				.then(res => {
+					toastr.success(`File '${this.props.file}.md' Deleted!`);
+					this.props.setFile(null);
+					this.props.history.push('/');
+				})
+				.catch(error => {
+					toastr.danger('Error Deleting File!');
+				});
+		}
+	}
+
 	render() {
 		const options = {
 			selectOnLineNumbers: true,
@@ -81,7 +126,6 @@ class Monaco extends Component {
 		};
 		const { width, file, content, css } = this.props;
 		const { open } = this.state;
-		const children = <h1>Test!</h1>;
 		return (
 			<Wrapper width={width}>
 				<Bar>
@@ -89,18 +133,33 @@ class Monaco extends Component {
 						<Icon icon={faCode} size="1x" />
 						<FileName>{file}.md</FileName>
 					</div>
-					<div className="simple-row" style={{ width: '170px' }}>
+					<div className="simple-row" style={{ width: '220px' }}>
 						<TooltipTrigger
-							tooltip="Import"
+							tooltip="Delete File"
+							trigger="hover"
+							theme="light"
+						>
+							<BrandButton
+								className="btn-brand-alt-danger"
+								alt
+								small
+								onClick={() => this.deleteFile()}
+							>
+								<Icon icon={faTrashAlt} size="1x" />
+							</BrandButton>
+						</TooltipTrigger>
+						<TooltipTrigger
+							tooltip="Save File"
+							className="btn-brand-alt-success"
 							trigger="hover"
 							theme="light"
 						>
 							<BrandButton
 								alt
 								small
-								onClick={() => confirm('Upload a File!')}
+								onClick={() => this.saveFile()}
 							>
-								<Icon icon={faUpload} size="1x" />
+								<Icon icon={faSave} size="1x" />
 							</BrandButton>
 						</TooltipTrigger>
 						<TooltipTrigger
@@ -158,11 +217,14 @@ class Monaco extends Component {
 	}
 }
 
-export default connect(
-	state => ({
-		content: state.editor.content,
-		css: state.editor.css,
-		file: state.editor.file
-	}),
-	{ updateContent }
-)(Monaco);
+export default withRouter(
+	connect(
+		state => ({
+			content: state.editor.content,
+			css: state.editor.css,
+			file: state.editor.file,
+			id: state.editor.id
+		}),
+		{ updateContent, setFile }
+	)(Monaco)
+);

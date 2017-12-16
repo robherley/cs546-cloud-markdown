@@ -6,6 +6,8 @@ import 'pivotal-ui/css/tabs';
 import { connect } from 'react-redux';
 import Monaco from './Monaco';
 import { updateCSS } from '../../actions/editorActions';
+import { loadFile } from '../../actions/fileActions';
+import { withRouter } from 'react-router-dom';
 
 const converter = new showdown.Converter();
 
@@ -26,8 +28,16 @@ class Editor extends React.Component {
 		super(props);
 	}
 
-	componentDidMount() {
-		this.updatePreview();
+	componentWillMount() {
+		if (!this.props.id) {
+			this.props.history.push('/');
+		}
+		this.props.loadFile(this.props.id);
+	}
+
+	async componentDidMount() {
+		setTimeout(() => this.updatePreview(), 1000);
+		await this.props.loadFile(this.props.id);
 	}
 
 	componentDidUpdate() {
@@ -47,66 +57,73 @@ class Editor extends React.Component {
 	}
 
 	render() {
-		const { width } = this.props;
-		if (width < 892) {
-			// This is a nice number
-			return (
-				<Tabs defaultActiveKey={1} className="custom-tabs">
-					<Tab eventKey={1} title="Markdown">
-						<ContentContainer style={{ height: '92vh' }}>
-							<Monaco
-								width={width}
-								onExport={() =>
-									this.refs.eyeFrame.contentWindow.print()
-								}
+		if (typeof this.props.content === 'string') {
+			const { width } = this.props;
+			if (width < 892) {
+				// This is a nice number
+				return (
+					<Tabs defaultActiveKey={1} className="custom-tabs">
+						<Tab eventKey={1} title="Markdown">
+							<ContentContainer style={{ height: '92vh' }}>
+								<Monaco
+									width={width}
+									onExport={() =>
+										this.refs.eyeFrame.contentWindow.print()
+									}
+								/>
+							</ContentContainer>
+						</Tab>
+						<Tab
+							eventKey={2}
+							title="Preview"
+							onEntered={() => this.updatePreview()}
+						>
+							<iframe
+								style={{
+									height: '95vh',
+									width: width
+								}}
+								frameBorder="0"
+								ref="eyeFrame"
 							/>
-						</ContentContainer>
-					</Tab>
-					<Tab
-						eventKey={2}
-						title="Preview"
-						onEntered={() => this.updatePreview()}
-					>
+						</Tab>
+					</Tabs>
+				);
+			} else {
+				return (
+					<ContentContainer>
+						<Monaco
+							width={width / 2}
+							onExport={() =>
+								this.refs.eyeFrame.contentWindow.print()
+							}
+						/>
+						<Separator />
 						<iframe
 							style={{
 								height: '95vh',
-								width: width
+								width: width / 2
 							}}
 							frameBorder="0"
 							ref="eyeFrame"
 						/>
-					</Tab>
-				</Tabs>
-			);
+					</ContentContainer>
+				);
+			}
 		} else {
-			return (
-				<ContentContainer>
-					<Monaco
-						width={width / 2}
-						onExport={() =>
-							this.refs.eyeFrame.contentWindow.print()
-						}
-					/>
-					<Separator />
-					<iframe
-						style={{
-							height: '95vh',
-							width: width / 2
-						}}
-						frameBorder="0"
-						ref="eyeFrame"
-					/>
-				</ContentContainer>
-			);
+			return null;
 		}
 	}
 }
 
-export default connect(
-	state => ({
-		width: state.width,
-		css: state.editor.css,
-		content: state.editor.content
-	}),
-	{ updateCSS }
-)(Editor);
+export default withRouter(
+	connect(
+		state => ({
+			width: state.width,
+			css: state.editor.css,
+			content: state.editor.content,
+			id: state.editor.id
+		}),
+		{ loadFile, updateCSS }
+	)(Editor)
+);
