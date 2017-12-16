@@ -9,7 +9,7 @@ AWS.config.secretAccessKey = process.env.AWS_USER_SECRET;
 const BUKET_NAME = 'stratus-prod';
 const s3 = new AWS.S3();
 
-const createFile = (req, res) => {
+const createFile = async (req, res) => {
 	const fname = req.body.fileName;
 	const fcontent = req.body.content;
 	const fstyle = req.body.style;
@@ -22,7 +22,7 @@ const createFile = (req, res) => {
 		madeby: id
 	});
 
-	File.newFile(newFile, (err, file) => {
+	File.newFile(newFile, async (err, file) => {
 		if (err) {
 			res.status(424).json({
 				error: err
@@ -37,11 +37,12 @@ const createFile = (req, res) => {
 
 	userFiles.push(newFile);
 
-	User.updateUser(id, { files: userFiles }, (err, user) => {
+	await User.updateUser(id, { files: userFiles }, async (err, user) => {
 		if (err) {
 			res.status(500).json({
 				error: err
 			});
+      console.log('hi')
 			return;
 		}
 
@@ -56,33 +57,29 @@ const createFile = (req, res) => {
 			style: fstyle
 		};
 
-		s3.putObject(
+		await s3.putObject(
 			{
 				Bucket: `${BUKET_NAME}/${id}`,
 				Key: `${newFile._id}.json`,
 				Body: JSON.stringify(s3File),
 				ContentType: 'application/json'
 			},
-			(err, data) => {
-				if (res.headerSet) {
-					return;
-				}
+  		(err, data) => {
+
 				if (err) {
 					res.status(500).json({
 						error: err
 					});
+          console.log('hi3')
 					return;
 				}
+
+        res.status(201).json({
+          id: newFile._id
+        });
 			}
 		);
-
-		if (res.headerSet) {
-			return;
-		}
-
-		res.status(201).json({
-			id: newFile._id
-		});
+		
 	});
 };
 
@@ -137,10 +134,6 @@ const updateFile = (req, res) => {
 			}
 		);
 
-		if (res.headerSet) {
-			return;
-		}
-
 		res.status(202).json({
 			file: file
 		});
@@ -174,24 +167,21 @@ const deleteFile = (req, res) => {
 					});
 					return;
 				}
+
+        res.status(200).json({
+          files: files
+        });
 			}
 		);
-
-		if (res.headerSet) {
-			return;
-		}
-
-		res.status(200).json({
-			files: files
-		});
+		
 	});
 };
 
-const loadFile = (req, res) => {
+const loadFile = async (req, res) => {
 	const fid = req.body.fileId;
 	const uid = req.user._id;
 
-	File.getFileById(fid, (err, file) => {
+	File.getFileById(fid, async (err, file) => {
 		if (err) {
 			res.status(500).json({
 				error: err
@@ -199,12 +189,12 @@ const loadFile = (req, res) => {
 			return;
 		}
 		//grab file from s3 and read into json object
-		s3.getObject(
+		await s3.getObject(
 			{
 				Bucket: `${BUKET_NAME}/${uid}`,
 				Key: `${fid}.json`
 			},
-			(err, content) => {
+			async (err, content) => {
 				if (res.headerSet) {
 					return;
 				}

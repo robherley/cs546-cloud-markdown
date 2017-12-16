@@ -60,15 +60,12 @@ const register = async (req, res) => {
 			});
 			return;
 		}
-	});
 
-	if (res.headerSet) {
-		return;
-	}
-
-	res.status(201).json({
-		user: newUser
+    res.status(201).json({
+      user: newUser
+    });
 	});
+	
 };
 
 passport.use(
