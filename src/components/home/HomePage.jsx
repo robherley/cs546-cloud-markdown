@@ -111,17 +111,20 @@ class HomePage extends React.Component {
 							<Icon icon={faPlus} size="1x" />
 							<Pad>New File</Pad>
 						</StyledButton>
-						{!hasFiles && (
+						{!hasFiles ? (
 							<span>
 								<Icon icon={faArrowLeft} size="1x" />
 								<Pad>You have no files! Make a new one!</Pad>
 							</span>
+						) : (
+							<Input
+								icon="search"
+								placeholder="Search"
+								onChange={e =>
+									this.handleSearch(e.target.value)
+								}
+							/>
 						)}
-						<Input
-							icon="search"
-							placeholder="Search"
-							onChange={e => this.handleSearch(e.target.value)}
-						/>
 					</ButtonContainer>
 					{hasFiles && (
 						<ComposedTable

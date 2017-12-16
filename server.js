@@ -15,6 +15,12 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const exphbs = require('express-handlebars');
 const applyRoutes = require('./routes');
+require('dotenv').config();
+
+if (!process.env.AWS_USER_KEY) {
+	throw Error('Environment files not found!!! Check the .env configuration.');
+	process.exit(1);
+}
 
 // Init Database
 require('./db/index');
